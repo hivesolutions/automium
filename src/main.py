@@ -82,9 +82,11 @@ def run():
     os.makedirs("build/log")
     shutil.move("automium.log", "build/log/automium.log")
 
+    # creates the directory(s) used for the various builds and then
     # moves the resulting contents into the correct target build
     # directory for the current build
-    shutil.move("build", "build_%d" % timestamp)
+    os.makedirs("builds")
+    shutil.move("build", "builds/build_%d" % timestamp)
 
 def main():
     print("Starting Hive Automium System ...")
