@@ -38,16 +38,50 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import os
+import sys
 import time
 import sched
 import shutil
+import datetime
 import subprocess
 
-LOOP_TIME = 10
+LOOP_TIME = 20
 """ The default time to be used in between iteration
 of the build automation process (delay time) """
 
+VERSION = "0.1.0"
+""" The version value """
+
+RELEASE = "120"
+""" The release value """
+
+BUILD = "1"
+""" The build value """
+
+RELEASE_DATE = "23 April 2002"
+""" The release date value """
+
+BRANDING_TEXT = "Hive Automium System %s (Hive Solutions Lda. r%s:%s %s)"
+""" The branding text value """
+
+VERSION_PRE_TEXT = "Python "
+""" The version pre text value """
+
+DEBUG = True
+""" The current verbose level control, in case this flag
+is set there will be much more information in the output """
+
+def information():
+    # print the branding information text and then displays
+    # the python specific information in the screen
+    print(BRANDING_TEXT % (VERSION, RELEASE, BUILD, RELEASE_DATE))
+    print(VERSION_PRE_TEXT + sys.version)
+
 def run():
+    # prints the command line information
+    print("------------------------------------------------------------------------")
+    print("Building 'Viriatum HTTP Server'...")
+
     # retrieves the current timestamp and then converts
     # it into the default integer "view"
     timestamp = time.time()
@@ -64,32 +98,75 @@ def run():
     current = os.getcwd()
     name = os.path.join(current, name)
 
-    # opens the file that will be used for the logging of
-    # the operation
-    log_file = open("automium.log", "wb")
+    # in case the temporary directory does not exists creates
+    # it then changes the current working directory to that
+    # same temporary directory (files to be created there)
+    not os.path.exists("tmp") and os.makedirs("tmp")
+    os.chdir("tmp")
 
     try:
-        # runs the default build operation command, this should
-        # trigger the build automation process
-        subprocess.call(name, stdout = log_file, stderr = log_file, shell = shell)
+        # opens the file that will be used for the logging of
+        # the operation
+        log_file = open("automium.log", "wb")
+
+        try:
+            # runs the default build operation command, this should
+            # trigger the build automation process, retrieves the
+            # return value that should represent the success
+            return_value = subprocess.call(name, stdin = None, stdout = log_file, stderr = log_file, shell = shell)
+        finally:
+            # closes the file immediately to avoid any file control
+            # leaking (could cause memory leak problems)
+            log_file.close()
     finally:
-        # closes the file immediately to avoid any file control
-        # leaking (could cause memory leak problems)
-        log_file.close()
+        # changes the current directory to the original position
+        # this should be able to avoid path problems
+        os.chdir(current)
 
     # creates the directory(s) used for the log and then moves
     # the log file into it (final target place)
-    not os.path.exists("build/log") and os.makedirs("build/log")
-    shutil.move("automium.log", "build/log/automium.log")
+    not os.path.exists("tmp/build/log") and os.makedirs("tmp/build/log")
+    shutil.move("tmp/automium.log", "tmp/build/log/automium.log")
 
     # creates the directory(s) used for the various builds and then
     # moves the resulting contents into the correct target build
     # directory for the current build
     not os.path.exists("builds") and os.makedirs("builds")
-    shutil.move("build", "builds/build_%d" % timestamp)
+    shutil.move("tmp/build", "builds/build_%d" % timestamp)
+
+    # removes the temporary directory (avoids problems with
+    # leaking file from execution)
+    shutil.rmtree("tmp")
+
+    # retrieves the (final) timestamp then converts it into the
+    # default integer base value and then calculates the delta values
+    timestamp_f = time.time()
+    timestamp_f = int(timestamp_f)
+    delta = timestamp_f - timestamp
+
+    # retrieves the current date time information and
+    # then formats it according to the value to be displayed
+    now = datetime.datetime.now()
+    now_string = now.strftime("%d/%m/%y %H:%M:%S")
+
+    # retrieves the proper success string according to the
+    # result from the batch file execution
+    if return_value == 0: success = "SUCCEEDED"
+    else: success = "FAILED"
+
+    # prints the command line information
+    print("Build finished and %s" % success)
+    print("Files for the build stored at 'builds/build_%s'" % timestamp)
+    print("Total time for build automation %d seconds" % delta)
+    print("Finished build automation at %s" % now_string)
+
+def cleanup():
+    os.path.exists("tmp") and shutil.rmtree("tmp")
 
 def main():
-    print("Starting Hive Automium System ...")
+    # displays the branding information on the screen so that
+    # the user gets a feel of the product
+    information();
 
     # creates the scheduler object with the default
     # time and sleep functions (default behavior)
@@ -104,6 +181,10 @@ def main():
         scheduler.enter(LOOP_TIME, 1, run, ())
         scheduler.run()
 
-if __name__ == "__main__":
+def main_s():
     try: main()
     except: pass
+
+if __name__ == "__main__":
+    try: DEBUG and main() or main_s()
+    finally: cleanup()
