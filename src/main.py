@@ -71,7 +71,7 @@ def run():
     try:
         # runs the default build operation command, this should
         # trigger the build automation process
-        subprocess.call(name, stdout = log_file, shell = shell)
+        subprocess.call(name, stdout = log_file, stderr = log_file, shell = shell)
     finally:
         # closes the file immediately to avoid any file control
         # leaking (could cause memory leak problems)
