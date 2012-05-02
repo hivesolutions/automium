@@ -53,15 +53,20 @@ def run():
     timestamp = time.time()
     timestamp = int(timestamp)
 
-    # opens the file that will be used for the logging of
-    # the operation
-    log_file = open("automium.log", "wb")
-
     # sets the appropriate build execution file name an
     # the shell execution flag according to the currently
     # executing operative system
     if os.name == "nt": name = "build.bat"; shell = False
     else: name = "build.sh"; shell = True
+
+    # retrieves the current working directory and then uses
+    # it to (compute) the complete file name
+    current = os.getcwd()
+    name = os.path.join(current, name)
+
+    # opens the file that will be used for the logging of
+    # the operation
+    log_file = open("automium.log", "wb")
 
     try:
         # runs the default build operation command, this should
@@ -72,9 +77,9 @@ def run():
         # leaking (could cause memory leak problems)
         log_file.close()
 
-    # creates the directory used for the log and then moves
+    # creates the directory(s) used for the log and then moves
     # the log file into it (final target place)
-    os.mkdir("build/log")
+    os.makedirs("build/log")
     shutil.move("automium.log", "build/log/automium.log")
 
     # moves the resulting contents into the correct target build
