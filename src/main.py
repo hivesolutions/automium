@@ -79,13 +79,13 @@ def run():
 
     # creates the directory(s) used for the log and then moves
     # the log file into it (final target place)
-    os.makedirs("build/log")
+    not os.path.exists("build/log") and os.makedirs("build/log")
     shutil.move("automium.log", "build/log/automium.log")
 
     # creates the directory(s) used for the various builds and then
     # moves the resulting contents into the correct target build
     # directory for the current build
-    os.makedirs("builds")
+    not os.path.exists("builds") and os.makedirs("builds")
     shutil.move("build", "builds/build_%d" % timestamp)
 
 def main():
