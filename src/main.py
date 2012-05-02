@@ -57,10 +57,16 @@ def run():
     # the operation
     log_file = open("automium.log", "wb")
 
+    # sets the appropriate build execution file name an
+    # the shell execution flag according to the currently
+    # executing operative system
+    if os.name == "nt": name = "build.bat"; shell = False
+    else: name = "build.sh"; shell = True
+
     try:
         # runs the default build operation command, this should
         # trigger the build automation process
-        subprocess.call("build.bat", stdout = log_file)
+        subprocess.call(name, stdout = log_file, shell = shell)
     finally:
         # closes the file immediately to avoid any file control
         # leaking (could cause memory leak problems)
@@ -69,7 +75,7 @@ def run():
     # creates the directory used for the log and then moves
     # the log file into it (final target place)
     os.mkdir("build/log")
-    shutil.move("automium.log" % timestamp, "build/log/automium.log")
+    shutil.move("automium.log", "build/log/automium.log")
 
     # moves the resulting contents into the correct target build
     # directory for the current build
