@@ -77,7 +77,7 @@ def information():
     print(BRANDING_TEXT % (VERSION, RELEASE, BUILD, RELEASE_DATE))
     print(VERSION_PRE_TEXT + sys.version)
 
-def run():
+def run(script_name = None):
     # prints the command line information
     print("------------------------------------------------------------------------")
     print("Building 'Viriatum HTTP Server'...")
@@ -92,6 +92,10 @@ def run():
     # executing operative system
     if os.name == "nt": name = "build.bat"; shell = False
     else: name = "build.sh"; shell = True
+
+    # in case the script name was sent as an argument to the
+    # current function, that name must be used
+    name = script_name or name
 
     # retrieves the current working directory and then uses
     # it to (compute) the complete file name
