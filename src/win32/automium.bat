@@ -27,7 +27,7 @@
 @echo off
 
 :: sets the temporary variables
-set RELATIVE_PATH=../
+set RELATIVE_PATH=../lib/
 set SCRIPT_NAME=main.py
 
 :: executes the initial python script with
