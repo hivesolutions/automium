@@ -97,6 +97,10 @@ def run():
     # it to (compute) the complete file name
     current = os.getcwd()
     name = os.path.join(current, name)
+    
+    # in case the script file to be executed does not exists
+    # in the current path raises an exception
+    if not os.path.exists(name): raise RuntimeError("build script '%s' not found" % name)
 
     # in case the temporary directory does not exists creates
     # it then changes the current working directory to that
