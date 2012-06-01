@@ -51,6 +51,10 @@ LOOP_TIME = 20
 """ The default time to be used in between iteration
 of the build automation process (delay time) """
 
+RECURSION = (0, 0, 0, LOOP_TIME, 0)
+""" The default recursion list to be used for the
+control of the iteration process """
+
 VERSION = "0.1.0"
 """ The version value """
 
@@ -180,13 +184,19 @@ def schedule(configuration):
     # time and sleep functions (default behavior)
     scheduler = sched.scheduler(time.time, time.sleep)
 
+    # tries to retrieve the recursion list from the configuration
+    # in case it fails the default recursion list is used
+    recursion = configuration.get("recursion", RECURSION)
+    days, hours, minutes, seconds, miliseconds = recursion
+    loop_time = days * 86400.0 + hours * 3600.0 * minutes * 60.0 + seconds + miliseconds / 1000.0
+
     # iterates continuously for the loop on the scheduler
     # this will enter the new task into it and then run
     # the next scheduler task
     while True:
         # enters the run task into the scheduler and then
         # runs it properly
-        scheduler.enter(LOOP_TIME, 1, run, (configuration,))
+        scheduler.enter(loop_time, 1, run, (configuration,))
         scheduler.run()
 
 def _set_default():
