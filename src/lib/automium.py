@@ -40,6 +40,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 import os
 import sys
 import time
+import json
 import sched
 import shutil
 import datetime
@@ -77,10 +78,16 @@ def information():
     print(BRANDING_TEXT % (VERSION, RELEASE, BUILD, RELEASE_DATE))
     print(VERSION_PRE_TEXT + sys.version)
 
-def run(script_name = None):
+def run(configuration = {}):
+    # retrieves the series of configuration values used
+    # in the running, defaulting to the pre defined values
+    # in case they are not defined
+    run_name = configuration.get("name", "Configuration File")
+    name = configuration.get("file", "build.bat")
+
     # prints the command line information
     print("------------------------------------------------------------------------")
-    print("Building 'Viriatum HTTP Server'...")
+    print("Building '%s'...", run_name)
 
     # retrieves the current timestamp and then converts
     # it into the default integer "view"
@@ -92,10 +99,6 @@ def run(script_name = None):
     # executing operative system
     if os.name == "nt": name = "build.bat"; shell = False
     else: name = "build.sh"; shell = True
-
-    # in case the script name was sent as an argument to the
-    # current function, that name must be used
-    name = script_name or name
 
     # retrieves the current working directory and then uses
     # it to (compute) the complete file name
@@ -172,6 +175,18 @@ def cleanup():
     os.path.exists("tmp") and shutil.rmtree("tmp")
 
 def main():
+    # retrieves the number of arguments provided
+    # to the the current execution script
+    arg_count = len(sys.argv)
+    if arg_count < 2: raise RuntimeError("invalid number of arguments")
+
+    # retrieves the path to the configuration file
+    # to be used in the current execution
+    file_path = sys.argv[1]
+    file = open(file_path, "rb")
+    try: configuration = json.load(file)
+    finally: file.close()
+
     # displays the branding information on the screen so that
     # the user gets a feel of the product
     information();
@@ -187,7 +202,7 @@ def main():
         # enters the run task into the scheduler and then
         # runs it properly
         scheduler.enter(LOOP_TIME, 1, run, ())
-        scheduler.run()
+        scheduler.run(configuration = configuration)
 
 def main_s():
     try: main()
