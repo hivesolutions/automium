@@ -188,7 +188,7 @@ def schedule(configuration):
     # in case it fails the default recursion list is used
     recursion = configuration.get("recursion", RECURSION)
     days, hours, minutes, seconds, miliseconds = recursion
-    loop_time = days * 86400.0 + hours * 3600.0 * minutes * 60.0 + seconds + miliseconds / 1000.0
+    loop_time = days * 86400.0 + hours * 3600.0 + minutes * 60.0 + seconds + miliseconds / 1000.0
 
     # iterates continuously for the loop on the scheduler
     # this will enter the new task into it and then run
