@@ -78,7 +78,7 @@ def information():
     print(BRANDING_TEXT % (VERSION, RELEASE, BUILD, RELEASE_DATE))
     print(VERSION_PRE_TEXT + sys.version)
 
-def run(configuration = {}):
+def run(configuration):
     # retrieves the series of configuration values used
     # in the running, defaulting to the pre defined values
     # in case they are not defined
@@ -87,7 +87,7 @@ def run(configuration = {}):
 
     # prints the command line information
     print("------------------------------------------------------------------------")
-    print("Building '%s'...", run_name)
+    print("Building '%s'..." % run_name)
 
     # retrieves the current timestamp and then converts
     # it into the default integer "view"
@@ -201,8 +201,8 @@ def main():
     while True:
         # enters the run task into the scheduler and then
         # runs it properly
-        scheduler.enter(LOOP_TIME, 1, run, ())
-        scheduler.run(configuration = configuration)
+        scheduler.enter(LOOP_TIME, 1, run, (configuration,))
+        scheduler.run()
 
 def main_s():
     try: main()
