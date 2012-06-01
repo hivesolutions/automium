@@ -43,6 +43,7 @@ import time
 import json
 import sched
 import shutil
+import getopt
 import datetime
 import subprocess
 
@@ -174,23 +175,7 @@ def run(configuration):
 def cleanup():
     os.path.exists("tmp") and shutil.rmtree("tmp")
 
-def main():
-    # retrieves the number of arguments provided
-    # to the the current execution script
-    arg_count = len(sys.argv)
-    if arg_count < 2: raise RuntimeError("invalid number of arguments")
-
-    # retrieves the path to the configuration file
-    # to be used in the current execution
-    file_path = sys.argv[1]
-    file = open(file_path, "rb")
-    try: configuration = json.load(file)
-    finally: file.close()
-
-    # displays the branding information on the screen so that
-    # the user gets a feel of the product
-    information();
-
+def schedule(configuration):
     # creates the scheduler object with the default
     # time and sleep functions (default behavior)
     scheduler = sched.scheduler(time.time, time.sleep)
@@ -204,10 +189,48 @@ def main():
         scheduler.enter(LOOP_TIME, 1, run, (configuration,))
         scheduler.run()
 
+def _set_default():
+    if os.path.exists("build.bat"): sys.argv.insert(1, "build.json")
+    else: raise RuntimeError("missing build file (invalid number of arguments)")
+
+def main():
+    # retrieves the number of arguments provided
+    # to the the current execution script
+    arg_count = len(sys.argv)
+    if arg_count < 2 or not sys.argv[1].endswith(".json"): _set_default()
+
+    # retrieves the path to the configuration file
+    # to be used in the current execution
+    file_path = sys.argv[1]
+    file = open(file_path, "rb")
+    try: configuration = json.load(file)
+    finally: file.close()
+
+    # displays the branding information on the screen so that
+    # the user gets a feel of the product
+    information();
+
+    # sets the default variable values for the various options
+    # to be received from the command line
+    keep = False
+
+    # parses the various options from the command line and then
+    # iterates over the map of them top set the appropriate values
+    # for the variables associated with the options
+    options, _arguments = getopt.getopt(sys.argv[2:], "k", ["keep"])
+    for option, _argument in options:
+        if option in ("-k", "--keep"):
+            keep = True
+
+    # in case the keep flag value is set starts the process in
+    # schedule mode otherwise runs "just" one iteration
+    if keep: schedule(configuration)
+    else: run(configuration)
+
 def main_s():
     try: main()
     except: pass
 
 if __name__ == "__main__":
-    try: DEBUG and main() or main_s()
+    try: DEBUG and not main() or main_s()
     finally: cleanup()
