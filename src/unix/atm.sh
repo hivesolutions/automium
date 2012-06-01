@@ -27,17 +27,15 @@
 # __license__   = GNU General Public License (GPL), Version 3
 
 # sets the temporary variables
-USR_BIN_PATH=/usr/bin
-PYTHON_PATH=$USR_BIN_PATH/python
-RELATIVE_PATH=../lib/
-SCRIPT_NAME=automium.py
+SCRIPT_NAME=automium.sh
 
 # retrieves the script directory path
 SCRIPT_DIRECTORY_PATH=$(dirname $(readlink -f $0))
 
-# executes the initial python script with
-# the provided arguments
-$PYTHON_PATH "$SCRIPT_DIRECTORY_PATH/$RELATIVE_PATH/$SCRIPT_NAME" $*
+# executes the "parent" script file that should
+# exist in the current directory with the provided
+# arguments (argument pipe)
+"$SCRIPT_DIRECTORY_PATH/$SCRIPT_NAME" $*
 
 # exits the process
 exit $?

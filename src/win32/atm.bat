@@ -27,12 +27,12 @@
 @echo off
 
 :: sets the temporary variables
-set RELATIVE_PATH=../lib/
-set SCRIPT_NAME=automium.py
+set SCRIPT_NAME=automium.bat
 
-:: executes the initial python script with
-:: the provided arguments
-python "%~dp0/%RELATIVE_PATH%/%SCRIPT_NAME%" %*
+:: executes the "parent" script file that should
+:: exist in the current directory with the provided
+:: arguments (argument pipe)
+"%~dp0/%SCRIPT_NAME%" %*
 
 :: exits the process
 exit /b %ERRORLEVEL%
