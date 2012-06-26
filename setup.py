@@ -60,8 +60,10 @@ setuptools.setup(
     zip_safe = True,
     scripts = [
         "scripts/pypi/atm.bat",
+        "scripts/pypi/atm.sh",
+        "scripts/pypi/automium_pypi.py",
         "scripts/pypi/automium.bat",
-        "scripts/pypi/automium_pypi.py"
+        "scripts/pypi/automium.sh"
     ],
     py_modules = [
         "automium"
