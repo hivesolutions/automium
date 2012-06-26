@@ -49,7 +49,7 @@ root_directory = os.path.dirname(__file__)
 if not root_directory == "": os.chdir(root_directory)
 
 setuptools.setup(
-    name = "automimum",
+    name = "automium",
     version = "0.1.0",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
