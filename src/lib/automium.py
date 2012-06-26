@@ -77,18 +77,51 @@ DEBUG = True
 """ The current verbose level control, in case this flag
 is set there will be much more information in the output """
 
+OS_ALIAS = {
+    "nt" : "win32",
+    "posix" : "unix"
+}
+""" Map defining the various alias to the operative system
+names based on the python definition of the names """
+
 def information():
     # print the branding information text and then displays
     # the python specific information in the screen
     print(BRANDING_TEXT % (VERSION, RELEASE, BUILD, RELEASE_DATE))
     print(VERSION_PRE_TEXT + sys.version)
 
-def run(configuration):
+def resolve_file(files):
+    # retrieves the current specific operative system
+    # naem and then resolves it using the alias map
+    os_name = os.name
+    os_name = OS_ALIAS.get(os_name, os_name)
+
+    # tries to retrieve the appropriate execution
+    # file using both the "exact" operative system
+    # name or in case it fails the wildcard based
+    # operative system name , then returns it to the
+    # caller method for execution
+    file = files.get(os_name, None) or files.get("*", None)
+    return file
+
+def run(path, configuration):
     # retrieves the series of configuration values used
     # in the running, defaulting to the pre defined values
     # in case they are not defined
     run_name = configuration.get("name", "Configuration File")
-    name = configuration.get("file", "build.bat")
+    files = configuration.get("files", {"*" : "build.bat"})
+
+    # resolves the "correct" file path from the provided
+    # files map, this is done using the current os name
+    file = resolve_file(files)
+
+    # calculates the new execution directory (to be set
+    # in the correct position) and then changed into it
+    file_path = os.path.join(path, file)
+
+    # sets the executing name as the file path resolved
+    # this is the script to be executed
+    name = file_path
 
     # prints the command line information
     print("------------------------------------------------------------------------")
@@ -99,11 +132,10 @@ def run(configuration):
     timestamp = time.time()
     timestamp = int(timestamp)
 
-    # sets the appropriate build execution file name an
-    # the shell execution flag according to the currently
-    # executing operative system
-    if os.name == "nt": name = "build.bat"; shell = False
-    else: name = "build.sh"; shell = True
+    # sets the appropriate shell execution flag according
+    # to the currently executing operative system
+    if os.name == "nt": shell = False
+    else: shell = True
 
     # retrieves the current working directory and then uses
     # it to (compute) the complete file name
@@ -179,7 +211,7 @@ def run(configuration):
 def cleanup():
     os.path.exists("tmp") and shutil.rmtree("tmp")
 
-def schedule(configuration):
+def schedule(path, configuration):
     # creates the scheduler object with the default
     # time and sleep functions (default behavior)
     scheduler = sched.scheduler(time.time, time.sleep)
@@ -232,10 +264,14 @@ def main():
         if option in ("-k", "--keep"):
             keep = True
 
+    # "calculates" the base path for the execution of the various
+    # scripts based on the current configuration file location
+    path = os.path.dirname(file_path)
+
     # in case the keep flag value is set starts the process in
     # schedule mode otherwise runs "just" one iteration
-    if keep: schedule(configuration)
-    else: run(configuration)
+    if keep: schedule(path, configuration)
+    else: run(path, configuration)
 
 def main_s():
     try: main()
