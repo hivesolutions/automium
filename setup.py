@@ -57,13 +57,13 @@ setuptools.setup(
     license = "GNU General Public License (GPL), Version 3",
     keywords = "automium build automation",
     url = "http://automium.com",
-    zip_safe = False,
+    zip_safe = True,
     scripts = [
         "scripts/pypi/automium.bat",
         "scripts/pypi/automium_pypi.py"
     ],
     py_modules = [
-        "automium",
+        "automium"
     ],
     package_dir = {
         "" : "src/lib"

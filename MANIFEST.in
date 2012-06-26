@@ -1,1 +1,2 @@
 recursive-include scripts *
+recursive-include src/lib *
