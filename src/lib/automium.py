@@ -232,7 +232,7 @@ def schedule(path, configuration):
         scheduler.run()
 
 def _set_default():
-    if os.path.exists("build.bat"): sys.argv.insert(1, "build.json")
+    if os.path.exists("build.json"): sys.argv.insert(1, "build.json")
     else: raise RuntimeError("missing build file (invalid number of arguments)")
 
 def main():
