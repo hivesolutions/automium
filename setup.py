@@ -59,6 +59,7 @@ setuptools.setup(
     url = "http://automium.com",
     zip_safe = True,
     scripts = [
+        "scripts/pypi/atm.bat",
         "scripts/pypi/automium.bat",
         "scripts/pypi/automium_pypi.py"
     ],
