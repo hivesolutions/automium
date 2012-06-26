@@ -261,8 +261,7 @@ def main():
     # for the variables associated with the options
     options, _arguments = getopt.getopt(sys.argv[2:], "k", ["keep"])
     for option, _argument in options:
-        if option in ("-k", "--keep"):
-            keep = True
+        if option in ("-k", "--keep"): keep = True
 
     # "calculates" the base path for the execution of the various
     # scripts based on the current configuration file location
