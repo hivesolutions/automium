@@ -85,8 +85,81 @@ OS_ALIAS = {
 names based on the python definition of the names """
 
 def byte_string(bytes):
-    byte_string = "%d bytes" % bytes
-    return byte_string
+    # sets the float value as the default option
+    # for the byte string calculus
+    is_float = True
+
+    # calculates the giga byte integer value for the
+    # currently provided set of bytes and it case
+    # it's greater that zero proceed to calculus
+    value = int(round(float(bytes) / 1073741824.0))
+    if value > 0:
+        # checks if the value is meant to be plural
+        # and if it should be set as float value with
+        # one decimal place (value to short)
+        if value == 1: format = "%.1f GByte"
+        elif value < 10: format = "%.1f GBytes"
+        else: format = "%d GBytes"; is_float = True
+
+        # converts the value into a decimal value in
+        # case it's the case and formats it
+        if is_float: value = float(bytes) / 1073741824.0
+        return format % value
+
+    # calculates the mega byte integer value for the
+    # currently provided set of bytes and it case
+    # it's greater that zero proceed to calculus
+    value = int(round(float(bytes) / 1048576.0))
+    if value > 0:
+        # checks if the value is meant to be plural
+        # and if it should be set as float value with
+        # one decimal place (value to short)
+        if value == 1: format = "%.1f MByte"
+        elif value < 10: format = "%.1f MBytes"
+        else: format = "%d MBytes"; is_float = True
+
+        # converts the value into a decimal value in
+        # case it's the case and formats it
+        if is_float: value = float(bytes) / 1048576.0
+        return format % value
+
+    # calculates the kilo byte integer value for the
+    # currently provided set of bytes and it case
+    # it's greater that zero proceed to calculus
+    value = int(round(float(bytes) / 1024.0))
+    if value > 0:
+        # checks if the value is meant to be plural
+        # and if it should be set as float value with
+        # one decimal place (value to short)
+        if value == 1: format = "%.1f KByte"
+        elif value < 10: format = "%.1f KBytes"
+        else: format = "%d KBytes"; is_float = True
+
+        # converts the value into a decimal value in
+        # case it's the case and formats it
+        if is_float: value = float(bytes) / 1024.0
+        return format % value
+
+    # calculates the byte integer value for the
+    # currently provided set of bytes and it case
+    # it's greater that zero proceed to calculus
+    value = bytes
+    if value > 0:
+        # checks if the value is meant to be plural
+        # and if it should be set as float value with
+        # one decimal place (value to short)
+        if value == 1: format = "%.1f Byte"
+        elif value < 10: format = "%.1f Bytes"
+        else: format = "%d Bytes"; is_float = True
+
+        # converts the value into a decimal value in
+        # case it's the case and formats it
+        if is_float: value = float(bytes)
+        return format % value
+
+    # returns the default and only option left
+    # as the zero bytes case
+    return "0 Bytes"
 
 def information():
     # print the branding information text and then displays
@@ -130,7 +203,7 @@ def get_size(path):
             file_path = os.path.join(directory_path, file_name)
             total_size += os.path.getsize(file_path)
 
-    # returns the acccumulator value containing the complete
+    # returns the accumulator value containing the complete
     # set of byte count
     return total_size
 
@@ -307,7 +380,7 @@ def main():
 
     # displays the branding information on the screen so that
     # the user gets a feel of the product
-    information();
+    information()
 
     # sets the default variable values for the various options
     # to be received from the command line
