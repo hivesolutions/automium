@@ -112,11 +112,22 @@ def resolve_file(files):
     return file
 
 def get_size(path):
+    # sets the initial value for the total path
+    # size (start at the initial value)
     total_size = 0
+
+    # walks through the path to count the bytes in
+    # each element
     for directory_path, _names, file_names in os.walk(path):
+        # iterate over all the file names in the current
+        # directory to count their size and "join" their
+        # size to the current accumulator
         for file_name in file_names:
             file_path = os.path.join(directory_path, file_name)
             total_size += os.path.getsize(file_path)
+
+    # returns the acccumulator value containing the complete
+    # set of byte count
     return total_size
 
 def run(path, configuration):
