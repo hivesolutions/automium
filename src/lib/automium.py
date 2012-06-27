@@ -84,6 +84,10 @@ OS_ALIAS = {
 """ Map defining the various alias to the operative system
 names based on the python definition of the names """
 
+def byte_string(bytes):
+    byte_string = "%d bytes" % bytes
+    return byte_string
+
 def information():
     # print the branding information text and then displays
     # the python specific information in the screen
@@ -235,6 +239,7 @@ def run(path, configuration):
     # retrieves the total directory size for the build, this
     # is an interesting diagnostic metric
     size = get_size("builds/%d" % timestamp)
+    size_string = byte_string(size)
 
     # creates the map that describes the current build
     # to be used to output this information into a descriptive
@@ -243,6 +248,7 @@ def run(path, configuration):
         "id" : timestamp,
         "system" : os_name,
         "size" : size,
+        "size_string" : size_string,
         "start_time" : timestamp,
         "end_time" : timestamp_f,
         "delta" : delta,
