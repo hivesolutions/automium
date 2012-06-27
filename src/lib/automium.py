@@ -202,6 +202,21 @@ def run(path, configuration):
     if return_value == 0: success = "SUCCEEDED"
     else: success = "FAILED"
 
+    # creates the map that describes the current build
+    # to be used to output this information into a descriptive
+    # json file that may be interpreted by third parties
+    description = {
+        "id" : "build_%d" % timestamp,
+        "start_time" : timestamp,
+        "end_time" : timestamp_f,
+        "delta" : delta,
+        "result" : return_value == 0
+    }
+    description_path = "builds/build_%d/description.json" % timestamp
+    description_file = open(description_path, "wb")
+    try: json.dump(description, description_file)
+    finally: description_file.close()
+
     # prints the command line information
     print("Build finished and %s" % success)
     print("Files for the build stored at 'builds/build_%s'" % timestamp)
