@@ -90,11 +90,18 @@ def information():
     print(BRANDING_TEXT % (VERSION, RELEASE, BUILD, RELEASE_DATE))
     print(VERSION_PRE_TEXT + sys.version)
 
-def resolve_file(files):
+def resolve_os():
     # retrieves the current specific operative system
-    # naem and then resolves it using the alias map
+    # name and then resolves it using the alias map
     os_name = os.name
     os_name = OS_ALIAS.get(os_name, os_name)
+    return os_name
+
+def resolve_file(files):
+    # resolves the current operative system descriptive
+    # name so that it's possible to correctly resolve
+    # the correct file to be used
+    os_name = resolve_os()
 
     # tries to retrieve the appropriate execution
     # file using both the "exact" operative system
@@ -103,6 +110,14 @@ def resolve_file(files):
     # caller method for execution
     file = files.get(os_name, None) or files.get("*", None)
     return file
+
+def get_size(path):
+    total_size = 0
+    for directory_path, _names, file_names in os.walk(path):
+        for file_name in file_names:
+            file_path = os.path.join(directory_path, file_name)
+            total_size += os.path.getsize(file_path)
+    return total_size
 
 def run(path, configuration):
     # retrieves the series of configuration values used
@@ -180,7 +195,7 @@ def run(path, configuration):
     # moves the resulting contents into the correct target build
     # directory for the current build
     not os.path.exists("builds") and os.makedirs("builds")
-    shutil.move("tmp/build", "builds/build_%d" % timestamp)
+    shutil.move("tmp/build", "builds/%d" % timestamp)
 
     # removes the temporary directory (avoids problems with
     # leaking file from execution)
@@ -202,24 +217,34 @@ def run(path, configuration):
     if return_value == 0: success = "SUCCEEDED"
     else: success = "FAILED"
 
+    # retrieves the name of the current operative system in
+    # order to put it in the description
+    os_name = resolve_os()
+
+    # retrieves the total directory size for the build, this
+    # is an interesting diagnostic metric
+    size = get_size("builds/%d" % timestamp)
+
     # creates the map that describes the current build
     # to be used to output this information into a descriptive
     # json file that may be interpreted by third parties
     description = {
-        "id" : "build_%d" % timestamp,
+        "id" : timestamp,
+        "system" : os_name,
+        "size" : size,
         "start_time" : timestamp,
         "end_time" : timestamp_f,
         "delta" : delta,
         "result" : return_value == 0
     }
-    description_path = "builds/build_%d/description.json" % timestamp
+    description_path = "builds/%d/description.json" % timestamp
     description_file = open(description_path, "wb")
     try: json.dump(description, description_file)
     finally: description_file.close()
 
     # prints the command line information
     print("Build finished and %s" % success)
-    print("Files for the build stored at 'builds/build_%s'" % timestamp)
+    print("Files for the build stored at 'builds/%s'" % timestamp)
     print("Total time for build automation %d seconds" % delta)
     print("Finished build automation at %s" % now_string)
 
