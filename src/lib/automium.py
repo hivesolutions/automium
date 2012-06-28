@@ -245,6 +245,8 @@ def run(path, configuration, current = None):
     current = current or os.getcwd()
     tmp_path = os.path.join(current, "tmp")
     log_path = os.path.join(tmp_path, "automium.log")
+    builds_path = os.path.join(current, "builds")
+    build_path = os.path.join(builds_path, "%d" % timestamp)
 
     # in case the current path is not absolute (must) create
     # the complete path by joining the name with the current
@@ -283,8 +285,8 @@ def run(path, configuration, current = None):
     # creates the directory(s) used for the various builds and then
     # moves the resulting contents into the correct target build
     # directory for the current build
-    not os.path.exists(current + "/builds") and os.makedirs(current + "/builds")
-    shutil.move(tmp_path + "/build", current + "/builds/%d" % timestamp)
+    not os.path.exists(builds_path) and os.makedirs(builds_path)
+    shutil.move(tmp_path + "/build", build_path)
 
     # removes the temporary directory (avoids problems with
     # leaking file from execution)
@@ -312,7 +314,7 @@ def run(path, configuration, current = None):
 
     # retrieves the total directory size for the build, this
     # is an interesting diagnostic metric
-    size = get_size(current + "/builds/%d" % timestamp)
+    size = get_size(build_path)
     size_string = byte_string(size)
 
     # creates the map that describes the current build
@@ -328,7 +330,7 @@ def run(path, configuration, current = None):
         "delta" : delta,
         "result" : return_value == 0
     }
-    description_path = os.path.join(current, "builds/%d/description.json" % timestamp)
+    description_path = os.path.join(build_path, "description.json")
     description_file = open(description_path, "wb")
     try: json.dump(description, description_file)
     finally: description_file.close()
