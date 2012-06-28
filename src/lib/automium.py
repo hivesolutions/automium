@@ -207,7 +207,7 @@ def get_size(path):
     # set of byte count
     return total_size
 
-def run(path, configuration):
+def run(path, configuration, current = None):
     # retrieves the series of configuration values used
     # in the running, defaulting to the pre defined values
     # in case they are not defined
@@ -241,9 +241,15 @@ def run(path, configuration):
     else: shell = True
 
     # retrieves the current working directory and then uses
-    # it to (compute) the complete file name
-    current = os.getcwd()
-    name = os.path.join(current, name)
+    # it to (compute) the complete temporary path
+    current = current or os.getcwd()
+    tmp_path = os.path.join(current, "tmp")
+    log_path = os.path.join(tmp_path, "automium.log")
+
+    # in case the current path is not absolute (must) create
+    # the complete path by joining the name with the current
+    # path value (complete path construction)
+    if not os.path.isabs(name) : name = os.path.join(current, name)
 
     # in case the script file to be executed does not exists
     # in the current path raises an exception
@@ -252,42 +258,37 @@ def run(path, configuration):
     # in case the temporary directory does not exists creates
     # it then changes the current working directory to that
     # same temporary directory (files to be created there)
-    not os.path.exists("tmp") and os.makedirs("tmp")
-    os.chdir("tmp")
+    not os.path.exists(tmp_path) and os.makedirs(tmp_path)
+
+    # opens the file that will be used for the logging of
+    # the operation
+    log_file = open(log_path, "wb")
 
     try:
-        # opens the file that will be used for the logging of
-        # the operation
-        log_file = open("automium.log", "wb")
-
-        try:
-            # runs the default build operation command, this should
-            # trigger the build automation process, retrieves the
-            # return value that should represent the success
-            return_value = subprocess.call(name, stdin = None, stdout = log_file, stderr = log_file, shell = shell)
-        finally:
-            # closes the file immediately to avoid any file control
-            # leaking (could cause memory leak problems)
-            log_file.close()
+        # runs the default build operation command, this should
+        # trigger the build automation process, retrieves the
+        # return value that should represent the success
+        process = subprocess.Popen([name], stdin = None, stdout = log_file, stderr = log_file, shell = shell, cwd = tmp_path)
+        return_value = process.wait()
     finally:
-        # changes the current directory to the original position
-        # this should be able to avoid path problems
-        os.chdir(current)
+        # closes the file immediately to avoid any file control
+        # leaking (could cause memory leak problems)
+        log_file.close()
 
     # creates the directory(s) used for the log and then moves
     # the log file into it (final target place)
-    not os.path.exists("tmp/build/log") and os.makedirs("tmp/build/log")
-    shutil.move("tmp/automium.log", "tmp/build/log/automium.log")
+    not os.path.exists(tmp_path + "/build/log") and os.makedirs(tmp_path + "/build/log")
+    shutil.move(log_path, tmp_path + "/build/log/automium.log")
 
     # creates the directory(s) used for the various builds and then
     # moves the resulting contents into the correct target build
     # directory for the current build
-    not os.path.exists("builds") and os.makedirs("builds")
-    shutil.move("tmp/build", "builds/%d" % timestamp)
+    not os.path.exists(current + "/builds") and os.makedirs(current + "/builds")
+    shutil.move(tmp_path + "/build", current + "/builds/%d" % timestamp)
 
     # removes the temporary directory (avoids problems with
     # leaking file from execution)
-    shutil.rmtree("tmp")
+    shutil.rmtree(tmp_path)
 
     # retrieves the (final) timestamp then converts it into the
     # default integer base value and then calculates the delta values
@@ -311,7 +312,7 @@ def run(path, configuration):
 
     # retrieves the total directory size for the build, this
     # is an interesting diagnostic metric
-    size = get_size("builds/%d" % timestamp)
+    size = get_size(current + "/builds/%d" % timestamp)
     size_string = byte_string(size)
 
     # creates the map that describes the current build
@@ -327,7 +328,7 @@ def run(path, configuration):
         "delta" : delta,
         "result" : return_value == 0
     }
-    description_path = "builds/%d/description.json" % timestamp
+    description_path = os.path.join(current, "builds/%d/description.json" % timestamp)
     description_file = open(description_path, "wb")
     try: json.dump(description, description_file)
     finally: description_file.close()
@@ -338,8 +339,13 @@ def run(path, configuration):
     print("Total time for build automation %d seconds" % delta)
     print("Finished build automation at %s" % now_string)
 
-def cleanup():
-    os.path.exists("tmp") and shutil.rmtree("tmp")
+def cleanup(current = None):
+    # retrieves the current working directory and then uses
+    # it to (compute) the complete temporary path, then in
+    # case the temporary path exists removes it
+    current = current or os.getcwd()
+    tmp_path = os.path.join(current, "tmp")
+    os.path.exists(tmp_path) and shutil.rmtree(tmp_path)
 
 def schedule(path, configuration):
     # creates the scheduler object with the default
