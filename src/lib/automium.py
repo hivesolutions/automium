@@ -123,7 +123,7 @@ def delta_string(delta, counts = 2):
     # calculates the delta resulting value for the
     # number of hours in the delta in case this value
     # is greater than zero it must be processed
-    value = (delta % 86400) / 3600;
+    value = (delta % 86400) / 3600
     if valid or value > 0:
         # retrieves the appropriate format string according
         # to the resulting value
@@ -144,7 +144,7 @@ def delta_string(delta, counts = 2):
     # calculates the delta resulting value for the
     # number of minutes in the delta in case this value
     # is greater than zero it must be processed
-    value = (delta % 3600) / 60;
+    value = (delta % 3600) / 60
     if valid or value > 0:
         # retrieves the appropriate format string according
         # to the resulting value
@@ -163,21 +163,20 @@ def delta_string(delta, counts = 2):
     if counter == counts: return buffer.rstrip()
 
     # calculates the delta resulting value for the
-    # number of seconds in the delta in case this value
-    # is greater than zero it must be processed
-    value = delta % 60;
-    if valid or value > 0:
-        # retrieves the appropriate format string according
-        # to the resulting value
-        if value == 1: format = "%d second "
-        else: format = "%d seconds "
+    # number of seconds in the delta
+    value = delta % 60
 
-        # formats the value using the format string and the
-        # resulting value and then update the value of the
-        # counter and sets the valid flag
-        buffer += format % value
-        counter += 1
-        valid = True
+    # retrieves the appropriate format string according
+    # to the resulting value
+    if value == 1: format = "%d second "
+    else: format = "%d seconds "
+
+    # formats the value using the format string and the
+    # resulting value and then update the value of the
+    # counter and sets the valid flag
+    buffer += format % value
+    counter += 1
+    valid = True
 
     # the end of execution has been reached so the buffer must
     # be stripped and returned
