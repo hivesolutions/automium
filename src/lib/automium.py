@@ -268,7 +268,7 @@ def run(path, configuration, current = None):
     # otherwise such permission must be added
     _stat = os.stat(name)
     _mode = _stat.st_mode
-    if not _mode & stat.S_IXUSR: os.chmod(name, _mode & stat.S_IXUSR)
+    if not _mode & stat.S_IXUSR: os.chmod(name, _mode | stat.S_IXUSR)
 
     # opens the file that will be used for the logging of
     # the operation
