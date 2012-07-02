@@ -39,6 +39,7 @@ __license__ = "GNU General Public License (GPL), Version 3"
 
 import os
 import sys
+import stat
 import time
 import json
 import sched
@@ -261,6 +262,12 @@ def run(path, configuration, current = None):
     # it then changes the current working directory to that
     # same temporary directory (files to be created there)
     not os.path.exists(tmp_path) and os.makedirs(tmp_path)
+
+    # checks the current permissions on the name of the file
+    # to be executed (it must contain execution permission)
+    # otherwise such permission must be added
+    _stat = os.stat(name)
+    if not _stat & stat.S_IXUSR: os.chmod(name, _stat & stat.S_IXUSR)
 
     # opens the file that will be used for the logging of
     # the operation
