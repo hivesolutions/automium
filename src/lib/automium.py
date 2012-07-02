@@ -89,6 +89,100 @@ OS_ALIAS = {
 """ Map defining the various alias to the operative system
 names based on the python definition of the names """
 
+def delta_string(delta, counts = 2):
+    # starts the counter value (number of elements
+    # and the valid flag)
+    counter = 0
+    valid = False
+
+    # starts the initial buffer string as
+    # an empty string (no delta value)
+    buffer = ""
+
+    # calculates the delta resulting value for the
+    # number of days in the delta in case this value
+    # is greater than zero it must be processed
+    value = delta / 86400
+    if value > 0:
+        # retrieves the appropriate format string according
+        # to the resulting value
+        if value == 1: format = "%d day "
+        else: format = "%d days "
+
+        # formats the value using the format string and the
+        # resulting value and then update the value of the
+        # counter and sets the valid flag
+        buffer += format % value
+        counter += 1
+        valid = True
+
+    # checks if the current counter reached the count limit
+    # in such case returns the current buffer stripped
+    if counter == counts: return buffer.rstrip()
+
+    # calculates the delta resulting value for the
+    # number of hours in the delta in case this value
+    # is greater than zero it must be processed
+    value = (delta % 86400) / 3600;
+    if valid or value > 0:
+        # retrieves the appropriate format string according
+        # to the resulting value
+        if value == 1: format = "%d hour "
+        else: format = "%d hours "
+
+        # formats the value using the format string and the
+        # resulting value and then update the value of the
+        # counter and sets the valid flag
+        buffer += format % value
+        counter += 1
+        valid = True
+
+    # checks if the current counter reached the count limit
+    # in such case returns the current buffer stripped
+    if counter == counts: return buffer.rstrip()
+
+    # calculates the delta resulting value for the
+    # number of minutes in the delta in case this value
+    # is greater than zero it must be processed
+    value = (delta % 3600) / 60;
+    if valid or value > 0:
+        # retrieves the appropriate format string according
+        # to the resulting value
+        if value == 1: format = "%d minute "
+        else: format = "%d minutes "
+
+        # formats the value using the format string and the
+        # resulting value and then update the value of the
+        # counter and sets the valid flag
+        buffer += format % value
+        counter += 1
+        valid = True
+
+    # checks if the current counter reached the count limit
+    # in such case returns the current buffer stripped
+    if counter == counts: return buffer.rstrip()
+
+    # calculates the delta resulting value for the
+    # number of seconds in the delta in case this value
+    # is greater than zero it must be processed
+    value = delta % 60;
+    if valid or value > 0:
+        # retrieves the appropriate format string according
+        # to the resulting value
+        if value == 1: format = "%d second "
+        else: format = "%d seconds "
+
+        # formats the value using the format string and the
+        # resulting value and then update the value of the
+        # counter and sets the valid flag
+        buffer += format % value
+        counter += 1
+        valid = True
+
+    # the end of execution has been reached so the buffer must
+    # be stripped and returned
+    return buffer.rstrip()
+
 def byte_string(bytes):
     # sets the float value as the default option
     # for the byte string calculus
