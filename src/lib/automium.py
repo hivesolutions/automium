@@ -56,6 +56,10 @@ RECURSION = (0, 0, 0, LOOP_TIME, 0)
 """ The default recursion list to be used for the
 control of the iteration process """
 
+TIMESTAMP_PRECISION = 100.0
+""" The precision to be used for the timestamp integer
+identifier calculation (more precision less collisions) """
+
 VERSION = "0.1.0"
 """ The version value """
 
@@ -235,6 +239,7 @@ def run(path, configuration, current = None):
     # it into the default integer "view"
     timestamp = time.time()
     timestamp = int(timestamp)
+    timestamp_p = int(timestamp * TIMESTAMP_PRECISION)
 
     # sets the appropriate shell execution flag according
     # to the currently executing operative system
@@ -279,7 +284,8 @@ def run(path, configuration, current = None):
         # trigger the build automation process, retrieves the
         # return value that should represent the success
         process = subprocess.Popen([name], stdin = None, stdout = log_file, stderr = log_file, shell = shell, cwd = tmp_path)
-        return_value = process.wait()
+        process.communicate()
+        return_value = process.returncode
     finally:
         # closes the file immediately to avoid any file control
         # leaking (could cause memory leak problems)
@@ -329,7 +335,7 @@ def run(path, configuration, current = None):
     # to be used to output this information into a descriptive
     # json file that may be interpreted by third parties
     description = {
-        "id" : timestamp,
+        "id" : timestamp_p,
         "system" : os_name,
         "size" : size,
         "size_string" : size_string,
@@ -345,7 +351,7 @@ def run(path, configuration, current = None):
 
     # prints the command line information
     print("Build finished and %s" % success)
-    print("Files for the build stored at 'builds/%s'" % timestamp)
+    print("Files for the build stored at 'builds/%s'" % timestamp_p)
     print("Total time for build automation %d seconds" % delta)
     print("Finished build automation at %s" % now_string)
 
