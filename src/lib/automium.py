@@ -240,7 +240,7 @@ def run(path, configuration, current = None):
     # extra precision timestamp is also created for the
     # purpose of being used as the build identifier
     timestamp = time.time()
-    timestamp = int(timestamp)
+    timestamp_s = int(timestamp)
     timestamp_p = int(timestamp * TIMESTAMP_PRECISION)
 
     # sets the appropriate shell execution flag according
@@ -312,7 +312,7 @@ def run(path, configuration, current = None):
     # default integer base value and then calculates the delta values
     timestamp_f = time.time()
     timestamp_f = int(timestamp_f)
-    delta = timestamp_f - timestamp
+    delta = timestamp_f - timestamp_s
 
     # retrieves the current date time information and
     # then formats it according to the value to be displayed
@@ -341,7 +341,7 @@ def run(path, configuration, current = None):
         "system" : os_name,
         "size" : size,
         "size_string" : size_string,
-        "start_time" : timestamp,
+        "start_time" : timestamp_s,
         "end_time" : timestamp_f,
         "delta" : delta,
         "result" : return_value == 0
