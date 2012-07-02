@@ -426,6 +426,10 @@ def run(path, configuration, current = None):
     size = get_size(build_path)
     size_string = byte_string(size)
 
+    # calculate the string that describes the delta time in
+    # an easy to understand value
+    _delta_string = delta_string(delta)
+
     # creates the map that describes the current build
     # to be used to output this information into a descriptive
     # json file that may be interpreted by third parties
@@ -447,7 +451,7 @@ def run(path, configuration, current = None):
     # prints the command line information
     print("Build finished and %s" % success)
     print("Files for the build stored at 'builds/%s'" % timestamp_p)
-    print("Total time for build automation %d seconds" % delta)
+    print("Total time for build automation %s" % _delta_string)
     print("Finished build automation at %s" % now_string)
 
 def cleanup(current = None):
