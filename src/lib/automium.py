@@ -236,7 +236,9 @@ def run(path, configuration, current = None):
     print("Building '%s'..." % run_name)
 
     # retrieves the current timestamp and then converts
-    # it into the default integer "view"
+    # it into the default integer "view" note that an
+    # extra precision timestamp is also created for the
+    # purpose of being used as the build identifier
     timestamp = time.time()
     timestamp = int(timestamp)
     timestamp_p = int(timestamp * TIMESTAMP_PRECISION)
@@ -252,7 +254,7 @@ def run(path, configuration, current = None):
     tmp_path = os.path.join(current, "tmp")
     log_path = os.path.join(tmp_path, "automium.log")
     builds_path = os.path.join(current, "builds")
-    build_path = os.path.join(builds_path, "%d" % timestamp)
+    build_path = os.path.join(builds_path, "%d" % timestamp_p)
 
     # in case the current path is not absolute (must) create
     # the complete path by joining the name with the current
