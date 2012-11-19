@@ -388,15 +388,41 @@ def run(path, configuration, current = None):
 
     # in case the version file was created must read it and set
     # the version string with its value, then removes the file
-    if os.path.exists(tmp_path + "/build/VERSION"):
-        version_file = open(tmp_path + "/build/VERSION")
+    if os.path.exists(tmp_path + "/verify/VERSION"):
+        version_file = open(tmp_path + "/verify/VERSION")
         try: version =  version_file.read().strip()
         finally: version_file.close()
-        os.remove(tmp_path + "/build/VERSION")
+        os.remove(tmp_path + "/verify/VERSION")
     # otherwise must set the version string with the default (unset)
     # value, no version was set by the "builder"
     else:
         version = None
+
+    # in case the log file was created must read it and set
+    # the log string with its value, then removes the file
+    if os.path.exists(tmp_path + "/verify/LOG"):
+        log_file = open(tmp_path + "/verify/LOG")
+        try: log =  log_file.read().strip()
+        finally: log_file.close()
+        os.remove(tmp_path + "/verify/LOG")
+    # otherwise must set the log string with the default (unset)
+    # value, no log was set by the "builder"
+    else:
+        log = None
+
+    # starts the sequence value with an empty list and then
+    # iterates over the log lines splitting the values over
+    # the tab character and adds the map structure to the log
+    # sequence structure
+    log_s = []
+    for log_line in log:
+        id, user, date, message = log_line.split("\t")
+        log_s.append({
+            "id" : id,
+            "user" : user,
+            "date" : date,
+            "message" : message
+        })
 
     # creates the directory(s) used for the log and then moves
     # the log file into it (final target place)
@@ -454,6 +480,7 @@ def run(path, configuration, current = None):
         "start_time" : timestamp_s,
         "end_time" : timestamp_f,
         "delta" : delta,
+        "log" : log_s,
         "result" : return_value == 0
     }
     description_path = os.path.join(build_path, "description.json")
