@@ -60,7 +60,7 @@ TIMESTAMP_PRECISION = 100.0
 """ The precision to be used for the timestamp integer
 identifier calculation (more precision less collisions) """
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 """ The version value """
 
 RELEASE = "120"
@@ -69,7 +69,7 @@ RELEASE = "120"
 BUILD = "1"
 """ The build value """
 
-RELEASE_DATE = "23 April 2002"
+RELEASE_DATE = "23 April 2012"
 """ The release date value """
 
 BRANDING_TEXT = "Hive Automium System %s (Hive Solutions Lda. r%s:%s %s)"
@@ -386,6 +386,18 @@ def run(path, configuration, current = None):
         # leaking (could cause memory leak problems)
         log_file.close()
 
+    # in case the version file was created must read it and set
+    # the version string with its value, then removes the file
+    if os.path.exists(tmp_path + "/build/VERSION"):
+        version_file = open(tmp_path + "/build/VERSION")
+        try: version =  version_file.read().strip()
+        finally: version_file.close()
+        os.remove(tmp_path + "/build/VERSION")
+    # otherwise must set the version string with the default (unset)
+    # value, no version was set by the "builder"
+    else:
+        version = None
+
     # creates the directory(s) used for the log and then moves
     # the log file into it (final target place)
     not os.path.exists(tmp_path + "/build/log") and os.makedirs(tmp_path + "/build/log")
@@ -436,6 +448,7 @@ def run(path, configuration, current = None):
     description = {
         "id" : timestamp_p,
         "system" : os_name,
+        "version" : version,
         "size" : size,
         "size_string" : size_string,
         "start_time" : timestamp_s,
