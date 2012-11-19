@@ -35,7 +35,7 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 """ The copyright for the module """
 
 __license__ = "GNU General Public License (GPL), Version 3"
-""" The license for the module """
+""" The license for the modules """
 
 import os
 import sys
