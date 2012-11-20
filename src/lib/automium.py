@@ -42,6 +42,7 @@ import sys
 import stat
 import time
 import json
+import errno
 import sched
 import shutil
 import getopt
@@ -60,7 +61,7 @@ TIMESTAMP_PRECISION = 100.0
 """ The precision to be used for the timestamp integer
 identifier calculation (more precision less collisions) """
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 """ The version value """
 
 RELEASE = "120"
@@ -305,24 +306,28 @@ def get_size(path):
     # set of byte count
     return total_size
 
-def run(path, configuration, current = None):
+def run(path, configuration, options = {}, current = None):
     # retrieves the series of configuration values used
     # in the running, defaulting to the pre defined values
     # in case they are not defined
     run_name = configuration.get("name", "Configuration File")
     files = configuration.get("files", {"*" : "build.bat"})
+    files_v = configuration.get("verify", {})
 
     # resolves the "correct" file path from the provided
     # files map, this is done using the current os name
     file = resolve_file(files)
+    file_v = resolve_file(files_v)
 
     # calculates the new execution directory (to be set
     # in the correct position) and then changed into it
     file_path = os.path.join(path, file)
+    file_v_path = os.path.join(path, file_v)
 
     # sets the executing name as the file path resolved
     # this is the script to be executed
     name = file_path
+    name_v = file_v_path
 
     # prints the command line information
     print("------------------------------------------------------------------------")
@@ -353,10 +358,15 @@ def run(path, configuration, current = None):
     # the complete path by joining the name with the current
     # path value (complete path construction)
     if not os.path.isabs(name) : name = os.path.join(current, name)
+    if name_v and not os.path.isabs(name_v) : name_v = os.path.join(current, name_v)
 
     # in case the script file to be executed does not exists
     # in the current path raises an exception
     if not os.path.exists(name): raise RuntimeError("build script '%s' not found" % name)
+
+    # in case the verify script file to be executed does not exists
+    # in the current path raises an exception
+    if name_v and not os.path.exists(name_v): raise RuntimeError("verify script '%s' not found" % name_v)
 
     # in case the temporary directory does not exists creates
     # it then changes the current working directory to that
@@ -370,6 +380,46 @@ def run(path, configuration, current = None):
     _mode = _stat.st_mode
     if not _mode & stat.S_IXUSR: os.chmod(name, _mode | stat.S_IXUSR)
 
+    # tries to retrieve the value sof the previous version in case it's
+    # set prints the information on it
+    previous = options.get("previous", None)
+    if previous: print("Verifying changes from version '%s'..." % previous)
+
+    # opens the null file to be used for the output of the verify
+    # process (it's meant to be ignored)
+    null_file = open(os.devnull, "wb")
+
+    try:
+        # runs the default verify operation command, this should
+        # trigger the build automation process, retrieves the
+        # return value that should represent the success of the
+        # verification process, note that the command is only run
+        # in case the name (path) exists
+        process = name_v and subprocess.Popen(
+            _create_args(name_v) + (previous and [previous] or []),
+            stdout = null_file,
+            stderr = null_file,
+            shell = shell,
+            cwd = tmp_path
+        ) or None
+        process and process.communicate()
+        return_value = process.returncode if process else 0
+    finally:
+        # closes the null file to avoid any leak of file descriptors
+        # from the operative system
+        null_file.close()
+
+    # in case the return value from the verification process is
+    # no zero must skip the build it's not required
+    if not return_value == 0:
+        print("Skipped current build, operation not required")
+        return
+    
+    # otherwise in case the previous value was set must print a
+    # message indicating the version change
+    elif previous:
+        print("Build has changed, must perform operation")
+
     # opens the file that will be used for the logging of
     # the operation
     log_file = open(log_path, "wb")
@@ -378,7 +428,14 @@ def run(path, configuration, current = None):
         # runs the default build operation command, this should
         # trigger the build automation process, retrieves the
         # return value that should represent the success
-        process = subprocess.Popen([name], stdin = None, stdout = log_file, stderr = log_file, shell = shell, cwd = tmp_path)
+        process = subprocess.Popen(
+            _create_args(name),
+            stdin = None,
+            stdout = log_file,
+            stderr = log_file,
+            shell = shell,
+            cwd = tmp_path
+        )
         process.communicate()
         return_value = process.returncode
     finally:
@@ -408,14 +465,16 @@ def run(path, configuration, current = None):
     # otherwise must set the log string with the default (unset)
     # value, no log was set by the "builder"
     else:
-        log = None
+        log = ""
 
     # starts the sequence value with an empty list and then
     # iterates over the log lines splitting the values over
     # the tab character and adds the map structure to the log
     # sequence structure
     log_s = []
-    for log_line in log:
+    log_lines = log.split("\n")
+    for log_line in log_lines:
+        if not log_line: continue
         id, user, date, message = log_line.split("\t")
         log_s.append({
             "id" : id,
@@ -431,13 +490,14 @@ def run(path, configuration, current = None):
 
     # creates the directory(s) used for the various builds and then
     # moves the resulting contents into the correct target build
-    # directory for the current build
+    # directory for the current build, then deletes the verify
+    # directory contained in the temporary path
     not os.path.exists(builds_path) and os.makedirs(builds_path)
     shutil.move(tmp_path + "/build", build_path)
 
     # removes the temporary directory (avoids problems with
     # leaking file from execution)
-    shutil.rmtree(tmp_path)
+    shutil.rmtree(tmp_path, ignore_errors = False, onerror = _remove_error)
 
     # retrieves the (final) timestamp then converts it into the
     # default integer base value and then calculates the delta values
@@ -500,9 +560,9 @@ def cleanup(current = None):
     # case the temporary path exists removes it
     current = current or os.getcwd()
     tmp_path = os.path.join(current, "tmp")
-    os.path.exists(tmp_path) and shutil.rmtree(tmp_path)
+    os.path.exists(tmp_path) and shutil.rmtree(tmp_path, ignore_errors = False, onerror = _remove_error)
 
-def schedule(path, configuration):
+def schedule(path, configuration, options):
     # creates the scheduler object with the default
     # time and sleep functions (default behavior)
     scheduler = sched.scheduler(time.time, time.sleep)
@@ -519,12 +579,26 @@ def schedule(path, configuration):
     while True:
         # enters the run task into the scheduler and then
         # runs it properly
-        scheduler.enter(loop_time, 1, run, (configuration,))
+        scheduler.enter(loop_time, 1, run, (configuration, options))
         scheduler.run()
+
+def _create_args(name):
+    base = os.path.basename(name)
+    _name, extension = os.path.splitext(base)
+    if extension == ".py": return ["python", name]
+    return [name]
 
 def _set_default():
     if os.path.exists("build.json"): sys.argv.insert(1, "build.json")
     else: raise RuntimeError("missing build file (invalid number of arguments)")
+
+def _remove_error(func, path, exc):
+    excvalue = exc[1]
+    if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
+        os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        func(path)
+    else:
+        raise
 
 def main():
     # retrieves the number of arguments provided
@@ -543,6 +617,10 @@ def main():
     # the user gets a feel of the product
     information()
 
+    # starts the map containing the various options to be sent
+    # to the "run" procedure
+    options = {}
+
     # sets the default variable values for the various options
     # to be received from the command line
     keep = False
@@ -550,9 +628,10 @@ def main():
     # parses the various options from the command line and then
     # iterates over the map of them top set the appropriate values
     # for the variables associated with the options
-    options, _arguments = getopt.getopt(sys.argv[2:], "k", ["keep"])
-    for option, _argument in options:
+    _options, _arguments = getopt.getopt(sys.argv[2:], "kp:", ["keep", "previous="])
+    for option, argument in _options:
         if option in ("-k", "--keep"): keep = True
+        elif option in ("-p", "--previous"): options["previous"] = argument
 
     # "calculates" the base path for the execution of the various
     # scripts based on the current configuration file location
@@ -560,8 +639,8 @@ def main():
 
     # in case the keep flag value is set starts the process in
     # schedule mode otherwise runs "just" one iteration
-    if keep: schedule(path, configuration)
-    else: run(path, configuration)
+    if keep: schedule(path, configuration, options)
+    else: run(path, configuration, options)
 
 def main_s():
     try: main()
