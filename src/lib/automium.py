@@ -369,10 +369,15 @@ def run(path, configuration, options = {}, current = None):
     # in the current path raises an exception
     if name_v and not os.path.exists(name_v): raise RuntimeError("verify script '%s' not found" % name_v)
 
-    # in case the temporary directory does not exists creates
-    # it then changes the current working directory to that
-    # same temporary directory (files to be created there)
-    not os.path.exists(tmp_path) and os.makedirs(tmp_path)
+    # in case the temporary path already exists must remove it to
+    # avoid possible duplicated files problem and then recreates
+    # the temporary path to be used in the current operation
+    os.path.exists(tmp_path) and shutil.rmtree(
+        tmp_path,
+        ignore_errors = False,
+        onerror = _remove_error
+    )
+    os.makedirs(tmp_path)
 
     # checks the current permissions on the name of the file
     # to be executed (it must contain execution permission)
@@ -416,8 +421,9 @@ def run(path, configuration, options = {}, current = None):
     # no build has occurred (skipped build)
     if not return_value == 0:
         print("Skipped current build, operation not required")
+        cleanup(current = current)
         return False
-    
+
     # otherwise in case the previous value was set must print a
     # message indicating the version change
     elif previous:
