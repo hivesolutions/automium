@@ -411,10 +411,12 @@ def run(path, configuration, options = {}, current = None):
         null_file.close()
 
     # in case the return value from the verification process is
-    # no zero must skip the build it's not required
+    # not zero must skip the build it's not required, returns the
+    # function immediately with an invalid value indicating that
+    # no build has occurred (skipped build)
     if not return_value == 0:
         print("Skipped current build, operation not required")
-        return
+        return False
     
     # otherwise in case the previous value was set must print a
     # message indicating the version change
@@ -549,11 +551,13 @@ def run(path, configuration, options = {}, current = None):
     try: json.dump(description, description_file)
     finally: description_file.close()
 
-    # prints the command line information
+    # prints the command line information and returns the control
+    # to the caller method in success (build completed)
     print("Build finished and %s" % success)
     print("Files for the build stored at 'builds/%s'" % timestamp_p)
     print("Total time for build automation %s" % _delta_string)
     print("Finished build automation at %s" % now_string)
+    return True
 
 def cleanup(current = None):
     # retrieves the current working directory and then uses
