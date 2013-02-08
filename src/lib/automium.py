@@ -340,6 +340,7 @@ def run(path, configuration, options = {}, current = None):
     timestamp = time.time()
     timestamp_s = int(timestamp)
     timestamp_p = int(timestamp * TIMESTAMP_PRECISION)
+    timestamp_sp = str(timestamp_p)
 
     # sets the appropriate shell execution flag according
     # to the currently executing operative system
@@ -532,7 +533,7 @@ def run(path, configuration, options = {}, current = None):
     # to be used to output this information into a descriptive
     # json file that may be interpreted by third parties
     description = {
-        "id" : timestamp_p,
+        "id" : timestamp_sp,
         "system" : os_name,
         "version" : version,
         "size" : size,
