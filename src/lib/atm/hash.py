@@ -150,5 +150,3 @@ def hash_d(path, types = ("md5", "sha256")):
         # structure in the digest structure
         hashes.dump_file()
         digests[file_path] = hashes
-
-hash_d("C:/repo_extra/viriatum/scripts/build/builds/136058106393/target/rabeton")
