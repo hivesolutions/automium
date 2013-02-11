@@ -37,28 +37,16 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import subprocess
+import os
 
-import environ
+SEPARATOR = ";" if os.name == "nt" else ":"
+""" The separator to be used to separate environment
+variable, should be different between os types """
 
-DEV_HOME = "/dev"
-""" The default directory to the development directory
-to be used in the building stages """
+def environ_s(name, value, append = True):
+    _value = os.environ.get(name, None)
+    if _value and append: value = _value + SEPARATOR + value 
+    os.environ[name] = value
 
-def msbuild(path, dev = True):
-    # ensures that the development settings are correctly set
-    # in the environment in case the development mode is set
-    # then calls the msbuild command to start the process
-    dev and ensure_dev()
-    subprocess.call([
-        "msbuild",
-        path,
-        "/p:Configuration=Release",
-        "/p:VCBuildAdditionalOptions=/useenv"
-    ])
-
-def ensure_dev():
-    environ.environ_s("INCLUDE", DEV_HOME + "\\include")
-    environ.environ_s("LIB", DEV_HOME + "\\lib")
-    environ.environ_s("PATH", DEV_HOME + "\\bin")
-    environ.environ_s("PATH", DEV_HOME + "\\util")
+def environ(name):
+    return os.environ.get(name, None)
