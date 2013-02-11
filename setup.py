@@ -58,6 +58,9 @@ setuptools.setup(
     keywords = "automium build automation",
     url = "http://automium.com",
     zip_safe = True,
+    packages = [
+        "atm"
+    ],
     scripts = [
         "scripts/pypi/atm.bat",
         "scripts/pypi/atm.sh",
