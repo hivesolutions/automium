@@ -63,6 +63,9 @@ class Hash:
             hash.update(data)
 
     def dump_file(self):
+        # iterates over all the type of hash files
+        # to dump the file contents for the file
+        # associated with the hash type
         for type in self.types:
             # retrieves the hash for the current type in iteration
             # and uses it to compute the hexadecimal digest
@@ -79,6 +82,9 @@ class Hash:
             method = getattr(self, "_" + type + "_format")
             format = method(digest, name)
 
+            # opens the hash file for write purposes and then writes
+            # the resulting format string into it closing the file
+            # afterwards (to avoid memory leaks)
             file = open(self.file_path + "." + type, "wb")
             try: file.write(format + "\n")
             finally: file.close()
