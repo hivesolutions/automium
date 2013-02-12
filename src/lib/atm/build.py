@@ -41,7 +41,7 @@ import subprocess
 
 import environ
 
-DEV_HOME = "/dev"
+DEV_HOME = "\\dev"
 """ The default directory to the development directory
 to be used in the building stages """
 
@@ -58,7 +58,8 @@ def msbuild(path, dev = True):
     ])
 
 def ensure_dev():
-    environ.environ_s("INCLUDE", DEV_HOME + "\\include")
-    environ.environ_s("LIB", DEV_HOME + "\\lib")
-    environ.environ_s("PATH", DEV_HOME + "\\bin")
-    environ.environ_s("PATH", DEV_HOME + "\\util")
+    dev_home = environ.environ("DEV_HOME", DEV_HOME)
+    environ.environ_s("INCLUDE", dev_home + "\\include")
+    environ.environ_s("LIB", dev_home + "\\lib")
+    environ.environ_s("PATH", dev_home + "\\bin")
+    environ.environ_s("PATH", dev_home + "\\util")

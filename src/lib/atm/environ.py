@@ -48,5 +48,5 @@ def environ_s(name, value, append = True):
     if _value and append: value = _value + SEPARATOR + value 
     os.environ[name] = value
 
-def environ(name):
-    return os.environ.get(name, None)
+def environ(name, default = None):
+    return os.environ.get(name, default)
