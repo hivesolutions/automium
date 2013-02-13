@@ -70,6 +70,9 @@ def build(config_path):
     name_raw = name_arc + "-raw"
     name_src = name_arc + "-src"
 
+    # retrieves the current working directory and uses
+    # it to contruct the various base directories to be
+    # set in the paths related map
     cwd = os.getcwd()
     build_f = os.path.join(cwd, "build")
     repo_f = os.path.join(build_f, "repo")
@@ -77,7 +80,6 @@ def build(config_path):
     tmp_f = os.path.join(target_f, "tmp")
     result_f = os.path.join(target_f, "result")
     dist_f = os.path.join(target_f, "dist")
-
     paths = {
         "build" : build_f,
         "repo" : repo_f,
