@@ -37,5 +37,27 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-def git(path):
-    pass
+import os
+import subprocess
+
+import atm
+
+def git(url = None, path = None, clean = False):
+    url = url or atm.conf("repo", None)
+    path = path or atm.path("repo", None)
+
+    result = subprocess.call([
+        "git",
+        "clone",
+        url,
+        path,
+        "--quiet"
+    ])
+    if not result == 0: raise RuntimeError("Problem cloning repository using git")
+
+    if not clean: return
+
+    git_path = os.path.join(path, ".git")
+    gitignore_path = os.path.join(path, ".gitignore")
+    atm.remove(git_path)
+    atm.remove(gitignore_path)
