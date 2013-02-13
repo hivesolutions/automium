@@ -45,7 +45,7 @@ variable, should be different between os types """
 
 def environ_s(name, value, append = True):
     _value = os.environ.get(name, None)
-    if _value and append: value = _value + SEPARATOR + value 
+    if _value and append: value = _value + SEPARATOR + value
     os.environ[name] = value
 
 def environ(name, default = None):
