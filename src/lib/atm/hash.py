@@ -44,6 +44,13 @@ BUFFER_SIZE = 4096
 """ The size of the buffer to be used when reading
 from the file, should match a normal disk block """
 
+RESUME_FILES = {
+    "md5" : "MD5SUMS",
+    "sha256" : "SHA256SUMS"
+}
+""" The map associating the hash type with the name
+of the resume file to be used """
+
 class Hash:
     """
     Class that handles the hashing abstraction for
@@ -89,6 +96,32 @@ class Hash:
             try: file.write(format + "\n")
             finally: file.close()
 
+    def formats(self):
+        _formats = {}
+
+        # iterates over all the type of hash files
+        # to dump the file contents for the file
+        # associated with the hash type
+        for type in self.types:
+            # retrieves the hash for the current type in iteration
+            # and uses it to compute the hexadecimal digest
+            hash = self.hashes[type]
+            digest = hash.hexdigest()
+
+            # retrieves the "base" file name for the current file
+            # path associated with the hash
+            name = os.path.basename(self.file_path)
+
+            # tries to retrieve the method to be used to retrieve the
+            # format string for the current type and then calls it with
+            # the current digest and name values
+            method = getattr(self, "_" + type + "_format")
+            format = method(digest, name)
+
+            _formats[type] = format
+
+        return _formats
+
     def _md5_format(self, digest, name):
         return "%s *%s" % (digest, name)
 
@@ -100,11 +133,14 @@ class Hash:
             hash = hashlib.new(type)
             self.hashes[type] = hash
 
-def hash_d(path, types = ("md5", "sha256")):
+def hash_d(path = None, types = ("md5", "sha256")):
     """
     Computes the various hash values for the provided
     directory, the names of the generated files should
     conform with the base name for the file.
+
+    In case no path is provided the current working directory
+    is used instead.
 
     @type path: String
     @param path: The path to the directory for which the
@@ -113,6 +149,10 @@ def hash_d(path, types = ("md5", "sha256")):
     @param types: The various types of hash digests to be
     generated for the various files in the directory.
     """
+
+    # sets the default value for the path as the current
+    # working directory (allows default operations)
+    path = path or os.getcwd()
 
     # in case the provided path does not represents a valid
     # directory path (not possible to hash values) must raise
@@ -156,3 +196,34 @@ def hash_d(path, types = ("md5", "sha256")):
         # structure in the digest structure
         hashes.dump_file()
         digests[file_path] = hashes
+
+    # creates the map that will hold the various resume files
+    # to be used for each of the hash types, then iterates over
+    # the complete set of hash types to create them
+    files = {}
+    for type in types:
+        # tries to retrieve the name of the resume file for the
+        # current hash type in iteration in case it's not fond
+        # raises an exception indicating the invalid hash type
+        resume_name = RESUME_FILES.get(type, None)
+        if resume_name == None:
+            raise RuntimeError("Invalid hash type '%s'" % type)
+
+        # creates the full path to the resume file and opens it
+        # for writing in binary form and sets it in the map
+        file_path = os.path.join(path, resume_name)
+        file = open(file_path, "wb")
+        files[type] = file
+
+    # iterates over all the hash elements in the digests map
+    # and retrieves the various formats for the items flushing
+    # them into the appropriate resume files
+    for _file_path, hashes in digests.items():
+        formats = hashes.formats()
+        for type, format in formats.items():
+            file = files[type]
+            file.write(format + "\n")
+
+    # iterates over all the resume files to close them in order
+    # to avoid any memory leak
+    for type, file in files.items(): file.close()
