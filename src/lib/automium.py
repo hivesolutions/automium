@@ -409,7 +409,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
         # verification process, note that the command is only run
         # in case the name (path) exists
         process = name_v and subprocess.Popen(
-            _create_args(name_v, file = file_c, previous = previous, ),
+            _create_args(name_v, file = file_c, previous = previous),
             shell = shell,
             cwd = tmp_path
         ) or None
