@@ -88,13 +88,7 @@ def git_v(_version, url = None):
         # puts the current revision in the head branch into
         # the version file and then opens the file to be able
         # to prettify it into the normalized version value
-        result = subprocess.call([
-            "git",
-            "rev-parse",
-            "HEAD",
-            ">",
-            "VERSION"
-        ])
+        result = os.system("git rev-parse HEAD > VERSION")
         if not result == 0: raise RuntimeError("Problem executing 'rev-parse' using git")
 
         # opens the created version file and reads the version from
@@ -105,22 +99,12 @@ def git_v(_version, url = None):
 
         # calls the appropriate log command for the git according to
         # the existence or not of the previous version value
-        if _version: result = subprocess.call([
-            "git",
-            "log",
-            _version,
-            "..HEAD",
-            "--pretty=format:\"%h%x09%an%x09%ad%x09%s\"",
-            ">",
-            "LOG"
-        ])
-        else: result = subprocess.call([
-            "git",
-            "log",
-            "--pretty=format:\"%h%x09%an%x09%ad%x09%s\"",
-            ">",
-            "LOG"
-        ])
+        if _version: result = os.system(
+            "git log" + _version + " ..HEAD --pretty=format:\"%h%x09%an%x09%ad%x09%s\" > LOG"
+        )
+        else: result = os.system(
+            "git log --pretty=format:\"%h%x09%an%x09%ad%x09%s\" > LOG"
+        )
         if not result == 0: raise RuntimeError("Problem executing 'log' using git")
     finally:
         # changes the directory back to the original value in
