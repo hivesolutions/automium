@@ -306,27 +306,30 @@ def get_size(path):
     # set of byte count
     return total_size
 
-def run(path, configuration, options = {}, current = None):
+def run(path, configuration, options = {}, current = None, file_c = None):
     # retrieves the series of configuration values used
     # in the running, defaulting to the pre defined values
     # in case they are not defined
     run_name = configuration.get("name", "Configuration File")
+    scripts = configuration.get("scripts", {})
     files = configuration.get("files", {"*" : "build.bat"})
     files_v = configuration.get("verify", {})
 
     # resolves the "correct" file path from the provided
     # files map, this is done using the current os name
+    script = resolve_file(scripts)
     file = resolve_file(files)
     file_v = resolve_file(files_v)
 
     # calculates the new execution directory (to be set
     # in the correct position) and then changed into it
+    script_path = script and os.path.join(path, script)
     file_path = os.path.join(path, file)
     file_v_path = os.path.join(path, file_v)
 
     # sets the executing name as the file path resolved
     # this is the script to be executed
-    name = file_path
+    name = script_path or file_path
     name_v = file_v_path
 
     # prints the command line information
@@ -386,7 +389,7 @@ def run(path, configuration, options = {}, current = None):
     _mode = _stat.st_mode
     if not _mode & stat.S_IXUSR: os.chmod(name, _mode | stat.S_IXUSR)
 
-    # tries to retrieve the value sof the previous version in case it's
+    # tries to retrieve the value of the previous version in case it's
     # set prints the information on it
     previous = options.get("previous", None)
     if previous: print("Verifying changes from version '%s'..." % previous)
@@ -396,13 +399,17 @@ def run(path, configuration, options = {}, current = None):
     null_file = open(os.devnull, "wb")
 
     try:
+        # prints information about the file that is going to be
+        # executed to inform the end user
+        print("Executing '%s'..." % name_v)
+
         # runs the default verify operation command, this should
         # trigger the build automation process, retrieves the
         # return value that should represent the success of the
         # verification process, note that the command is only run
         # in case the name (path) exists
         process = name_v and subprocess.Popen(
-            _create_args(name_v) + (previous and [previous] or []),
+            _create_args(name_v, previous = previous, file = file_c),
             stdout = null_file,
             stderr = null_file,
             shell = shell,
@@ -434,11 +441,15 @@ def run(path, configuration, options = {}, current = None):
     log_file = open(log_path, "wb")
 
     try:
+        # prints information about the file that is going to be
+        # executed to inform the end user
+        print("Executing '%s'..." % name)
+
         # runs the default build operation command, this should
         # trigger the build automation process, retrieves the
         # return value that should represent the success
         process = subprocess.Popen(
-            _create_args(name),
+            _create_args(name, file = file_c),
             stdin = None,
             stdout = log_file,
             stderr = log_file,
@@ -593,11 +604,15 @@ def schedule(path, configuration, options):
         scheduler.enter(loop_time, 1, run, (configuration, options))
         scheduler.run()
 
-def _create_args(name):
+def _create_args(name, previous = None, file = None):
+    args = []
     base = os.path.basename(name)
     _name, extension = os.path.splitext(base)
-    if extension == ".py": return ["python", name]
-    return [name]
+    if extension == ".py": args.append("python")
+    if name: args.append(name)
+    if previous: args.append(previous)
+    if file: args.append(file)
+    return args
 
 def _set_default():
     if os.path.exists("build.json"): sys.argv.insert(1, "build.json")
@@ -623,6 +638,11 @@ def main():
     file = open(file_path, "rb")
     try: configuration = json.load(file)
     finally: file.close()
+
+    # retrieves the current working directory and uses it to
+    # construct the final configuration file path
+    cwd = os.getcwd()
+    file_path_f = os.path.join(cwd, file_path)
 
     # displays the branding information on the screen so that
     # the user gets a feel of the product
@@ -651,7 +671,7 @@ def main():
     # in case the keep flag value is set starts the process in
     # schedule mode otherwise runs "just" one iteration
     if keep: schedule(path, configuration, options)
-    else: run(path, configuration, options)
+    else: run(path, configuration, options = options, file_c = file_path_f)
 
 def main_s():
     try: main()
