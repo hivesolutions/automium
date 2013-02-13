@@ -103,6 +103,12 @@ def build(config_path):
     # currently loaded configuration (flush operation)
     create_paths()
 
+def cleanup():
+    tmp_f = path("tmp")
+    exists = tmp_f and os.path.exists(tmp_f) or False
+    if not exists: return
+    remove(tmp_f)
+
 def load(_config):
     global config
     for key, value in _config.items():
