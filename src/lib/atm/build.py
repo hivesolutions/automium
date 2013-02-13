@@ -50,12 +50,13 @@ def msbuild(path, dev = True):
     # in the environment in case the development mode is set
     # then calls the msbuild command to start the process
     dev and ensure_dev()
-    subprocess.call([
+    result = subprocess.call([
         "msbuild",
         path,
         "/p:Configuration=Release",
         "/p:VCBuildAdditionalOptions=/useenv"
     ])
+    if not result == 0: raise RuntimeError("Problem executing msbuild not successful")
 
 def ensure_dev():
     dev_home = environ.environ("DEV_HOME", DEV_HOME)
