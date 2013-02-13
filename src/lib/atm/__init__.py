@@ -34,6 +34,7 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
+import base
 import build
 import environ
 import exceptions
@@ -41,6 +42,7 @@ import hash
 import pack
 import repo
 
+from base import *
 from build import *
 from environ import *
 from exceptions import *
