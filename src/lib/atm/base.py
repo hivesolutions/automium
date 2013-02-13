@@ -49,6 +49,11 @@ be used across all the definitions and
 operations """
 
 def build(config_path):
+    # in case the provided config path is not valid raises an
+    # error indicating the problem
+    if not config_path:
+        raise RuntimeError("Invalid configuration path '%s'" % config_path)
+
     # opens the configuration file for reading and
     # reads the complete set of contents creating the
     # configuration definition map
