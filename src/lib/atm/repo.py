@@ -100,7 +100,7 @@ def git_v(_version, url = None):
         # calls the appropriate log command for the git according to
         # the existence or not of the previous version value
         if _version: result = os.system(
-            "git log" + _version + " ..HEAD --pretty=format:\"%h%x09%an%x09%ad%x09%s\" > LOG"
+            "git log " + _version + "..HEAD --pretty=format:\"%h%x09%an%x09%ad%x09%s\" > LOG"
         )
         else: result = os.system(
             "git log --pretty=format:\"%h%x09%an%x09%ad%x09%s\" > LOG"
