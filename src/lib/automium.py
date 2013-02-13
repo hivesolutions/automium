@@ -409,9 +409,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
         # verification process, note that the command is only run
         # in case the name (path) exists
         process = name_v and subprocess.Popen(
-            _create_args(name_v, previous = previous, file = file_c),
-            stdout = null_file,
-            stderr = null_file,
+            _create_args(name_v, file = file_c, previous = previous, ),
             shell = shell,
             cwd = tmp_path
         ) or None
@@ -604,14 +602,14 @@ def schedule(path, configuration, options):
         scheduler.enter(loop_time, 1, run, (configuration, options))
         scheduler.run()
 
-def _create_args(name, previous = None, file = None):
+def _create_args(name, file = None, previous = None):
     args = []
     base = os.path.basename(name)
     _name, extension = os.path.splitext(base)
     if extension == ".py": args.append("python")
     if name: args.append(name)
-    if previous: args.append(previous)
     if file: args.append(file)
+    if previous: args.append(previous)
     return args
 
 def _set_default():
