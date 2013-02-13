@@ -56,7 +56,10 @@ def compress(folder, target = None):
 def deb(path):
     pass
 
-def capsule(path, data_path, name, description = ""):
+def capsule(path, data_path, name = None, description = None):
+    name = name or atm.conf("name", "default")
+    description = description or atm.conf("description", "default")
+
     result = subprocess.call([
         "capsule",
         "clone",
