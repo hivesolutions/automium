@@ -37,8 +37,63 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
+import os
+import zipfile
+import tarfile
+import subprocess
+
+import atm
+
+def compress(folder, target = None):
+    zip(folder + ".zip", (folder,))
+    tar(folder + ".tar", (folder,))
+    tar(folder + ".tar.gz", (folder,), compress = True)
+    if not target: return
+    atm.move(folder + ".zip", target)
+    atm.move(folder + ".tar", target)
+    atm.move(folder + ".tar.gz", target)
+
 def deb(path):
     pass
 
-def zip(path):
-    pass
+def capsule(path, data_path, name, description = ""):
+    result = subprocess.call([
+        "capsule",
+        "clone",
+        path
+    ])
+    if not result == 0: raise RuntimeError("Capsule clone operation failed")
+
+    result = subprocess.call([
+        "capsule",
+        "extend",
+        path,
+        name,
+        description,
+        data_path
+    ])
+    if not result == 0: raise RuntimeError("Capsule extend operation failed")
+
+def zip(name, names):
+    _zip = zipfile.ZipFile(file = name, mode = "w")
+    try:
+        for _name in names:
+            is_dir = os.path.isdir(_name)
+            if is_dir:
+                base_name = os.path.basename(_name)
+                root_size = len(_name) - len(base_name)
+                for base, _dirs, files in os.walk(_name):
+                    for file in files:
+                        path = os.path.join(base, file)
+                        _zip.write(path, path[root_size:])
+            else:
+                _zip.write(_name)
+    finally:
+        _zip.close()
+
+def tar(name, names, compress = False):
+    _tar = tarfile.open(name = name, mode = compress and "w:gz" or "w")
+    try:
+        for _name in names: _tar.add(_name)
+    finally:
+        _tar.close()
