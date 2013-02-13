@@ -37,13 +37,29 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
+import os
 import subprocess
 
-import environ
+import atm
 
 DEV_HOME = "\\dev"
 """ The default directory to the development directory
 to be used in the building stages """
+
+def autogen(path = None, clean = False):
+    path = path or "autogen.sh"
+    result = subprocess.call([
+        path
+    ])
+    if not result == 0: raise RuntimeError("Problem executing autogen not successful")
+
+    if not clean: return
+
+    base_path = os.path.dirname(path)
+    cache = os.path.join(base_path, "autom4te.cache")
+    makefile = os.path.join(base_path, "Makefile-autoconfig")
+    atm.remove(cache)
+    atm.remove(makefile)
 
 def msbuild(path, dev = True):
     # ensures that the development settings are correctly set
@@ -59,8 +75,8 @@ def msbuild(path, dev = True):
     if not result == 0: raise RuntimeError("Problem executing msbuild not successful")
 
 def ensure_dev():
-    dev_home = environ.environ("DEV_HOME", DEV_HOME)
-    environ.environ_s("INCLUDE", dev_home + "\\include")
-    environ.environ_s("LIB", dev_home + "\\lib")
-    environ.environ_s("PATH", dev_home + "\\bin")
-    environ.environ_s("PATH", dev_home + "\\util")
+    dev_home = atm.environ("DEV_HOME", DEV_HOME)
+    atm.environ_s("INCLUDE", dev_home + "\\include")
+    atm.environ_s("LIB", dev_home + "\\lib")
+    atm.environ_s("PATH", dev_home + "\\bin")
+    atm.environ_s("PATH", dev_home + "\\util")
