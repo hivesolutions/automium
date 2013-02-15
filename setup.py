@@ -50,7 +50,7 @@ if not root_directory == "": os.chdir(root_directory)
 
 setuptools.setup(
     name = "automium",
-    version = "0.1.7",
+    version = "0.1.8",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
     description = "Automium System",
