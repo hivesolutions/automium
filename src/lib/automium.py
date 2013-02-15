@@ -401,7 +401,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     try:
         # prints information about the file that is going to be
         # executed to inform the end user
-        name_v and print("Executing '%s'..." % name_v)
+        if name_v: print("Executing '%s'..." % name_v)
 
         # runs the default verify operation command, this should
         # trigger the build automation process, retrieves the
