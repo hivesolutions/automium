@@ -325,7 +325,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     # in the correct position) and then changed into it
     script_path = script and os.path.join(path, script)
     file_path = os.path.join(path, file)
-    file_v_path = files_v and os.path.join(path, file_v)
+    file_v_path = file_v and os.path.join(path, file_v)
 
     # sets the executing name as the file path resolved
     # this is the script to be executed
