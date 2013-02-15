@@ -325,7 +325,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     # in the correct position) and then changed into it
     script_path = script and os.path.join(path, script)
     file_path = os.path.join(path, file)
-    file_v_path = os.path.join(path, file_v)
+    file_v_path = files_v and os.path.join(path, file_v)
 
     # sets the executing name as the file path resolved
     # this is the script to be executed
@@ -348,7 +348,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     # sets the appropriate shell execution flag according
     # to the currently executing operative system
     if os.name == "nt": shell = False
-    else: shell = True
+    else: shell = False
 
     # retrieves the current working directory and then uses
     # it to (compute) the complete temporary path
@@ -401,7 +401,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     try:
         # prints information about the file that is going to be
         # executed to inform the end user
-        print("Executing '%s'..." % name_v)
+        name_v and print("Executing '%s'..." % name_v)
 
         # runs the default verify operation command, this should
         # trigger the build automation process, retrieves the
