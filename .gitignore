@@ -1,4 +1,5 @@
 *.pyc
 
-build
-dist
+/build
+/dist
+/src/lib/automium.egg-info

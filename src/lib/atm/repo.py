@@ -57,8 +57,13 @@ def git(url = None, path = None, clean = False):
     ])
     if not result == 0: raise RuntimeError("Problem cloning repository using git")
 
+    # in case the clean option is not set returns immediately
+    # to avoid any extra remove operation
     if not clean: return
 
+    # retrieves the full path to the various files and directories
+    # that are meant to be removed and then removes them, this should
+    # sanitize the repository from extra metadata files
     git_path = os.path.join(path, ".git")
     gitignore_path = os.path.join(path, ".gitignore")
     atm.remove(git_path)
