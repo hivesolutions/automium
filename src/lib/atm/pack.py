@@ -69,7 +69,6 @@ def deb(path = None, **kwargs):
     size = kwargs.get("size") or atm.conf("size", "0")
     author = kwargs.get("author") or atm.conf("author", "default")
     description = kwargs.get("description") or atm.conf("description", "")
-
     contents = atm.DEB_CONTROL % (
         name,
         version,
