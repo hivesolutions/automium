@@ -65,7 +65,7 @@ def autogen(path = None, clean = False):
     atm.remove(autogen)
     atm.remove(makefile)
 
-def configure(path = None, args = (), includes = ()):
+def configure(path = None, args = (), includes = (), libraries = ()):
     # creates the pre-defined path for the configuration
     # file to be used in case it was not provided
     path = path or "./configure"
@@ -75,8 +75,10 @@ def configure(path = None, args = (), includes = ()):
     # include paths and sets the cflags variable with it
     env = _copy.copy(os.environ)
     includes_s = ""
+    libraries_s = ""
     for include in includes: includes_s += "-I" + include + " "
-    env["CFLAGS"] = includes_s
+    for library in libraries: libraries_s += "-L" + library + " "
+    env["CFLAGS"] = includes_s + " " + libraries_s
 
     # runs the configuration process with the newly set environment
     # variables and in case the execution fails raises an exception
