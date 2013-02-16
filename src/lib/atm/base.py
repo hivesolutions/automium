@@ -144,7 +144,7 @@ def copy(src, dst, replace = True, create = True):
     exists = os.path.exists(dst)
     if exists and replace: remove(dst)
     if not os.path.exists(dst) and create and not is_dir: os.makedirs(dst)
-    if is_dir: shutil.copytree(src, dst)
+    if is_dir: shutil.copytree(src, dst, symlinks = True)
     else: shutil.copy(src, dst)
 
 def remove(path):
