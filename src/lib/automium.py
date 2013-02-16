@@ -70,7 +70,7 @@ RELEASE = "130"
 BUILD = "1"
 """ The build value """
 
-RELEASE_DATE = "11 January 2013"
+RELEASE_DATE = "16 February 2013"
 """ The release date value """
 
 BRANDING_TEXT = "Hive Automium System %s (Hive Solutions Lda. r%s:%s %s)"
