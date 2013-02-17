@@ -138,13 +138,13 @@ def create_paths():
 def move(src, dst):
     shutil.move(src, dst)
 
-def copy(src, dst, replace = True, create = True):
+def copy(src, dst, replace = True, create = True, symlinks = True):
     is_dir = os.path.isdir(src)
     _is_dir = os.path.exists(dst)
     exists = os.path.exists(dst)
     if exists and replace: remove(dst)
     if not os.path.exists(dst) and create and not is_dir: os.makedirs(dst)
-    if is_dir: shutil.copytree(src, dst, symlinks = True)
+    if is_dir: shutil.copytree(src, dst, symlinks = symlinks)
     else: shutil.copy(src, dst)
 
 def remove(path):
