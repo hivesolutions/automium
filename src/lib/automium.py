@@ -447,7 +447,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
         # trigger the build automation process, retrieves the
         # return value that should represent the success
         process = subprocess.Popen(
-            _create_args(name, file = file_c),
+            _create_args(name, file = file_c, extend = True),
             stdin = None,
             stdout = log_file,
             stderr = log_file,
@@ -602,7 +602,7 @@ def schedule(path, configuration, options):
         scheduler.enter(loop_time, 1, run, (configuration, options))
         scheduler.run()
 
-def _create_args(name, file = None, previous = None):
+def _create_args(name, file = None, previous = None, extend = False):
     args = []
     base = os.path.basename(name)
     _name, extension = os.path.splitext(base)
@@ -610,7 +610,7 @@ def _create_args(name, file = None, previous = None):
     if name: args.append(name)
     if file: args.append(file)
     if previous: args.append(previous)
-    args.extend(sys.argv[1:])
+    if extend: args.extend(sys.argv[1:])
     return args
 
 def _set_default():
