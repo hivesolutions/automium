@@ -642,7 +642,8 @@ def main():
     # retrieves the number of arguments provided
     # to the the current execution script
     arg_count = len(sys.argv)
-    if arg_count < 2 or not sys.argv[1].endswith(".json"): _set_default()
+    build_default = arg_count < 2 or not sys.argv[1].endswith(".json")
+    if build_default: _set_default()
 
     # retrieves the path to the configuration file
     # to be used in the current execution
@@ -660,15 +661,9 @@ def main():
     # the user gets a feel of the product
     information()
 
-    # creates the list of arguments that is going to be sent to
-    # the underlying execution processes as arguments
-    args = []
-
     # starts the map containing the various options to be sent
     # to the "run" procedure
-    options = {
-        "args" : args
-    }
+    options = {}
 
     # sets the default variable values for the various options
     # to be received from the command line
@@ -677,11 +672,15 @@ def main():
     # parses the various options from the command line and then
     # iterates over the map of them top set the appropriate values
     # for the variables associated with the options
-    _options, _arguments = getopt.getopt(sys.argv[2:], "kp:", ["keep", "previous="])
+    _options, arguments = getopt.getopt(sys.argv[2:], "kp:", ["keep", "previous="])
     for option, argument in _options:
         if option in ("-k", "--keep"): keep = True
         elif option in ("-p", "--previous"): options["previous"] = argument
-        else: args.append(option)
+
+    # sets the arguments to be passed to the underlying processes
+    # to be created as the set of arguments that were not interpreted
+    # as options (and as such must be passed to the lower processes)
+    options["args"] = arguments
 
     # "calculates" the base path for the execution of the various
     # scripts based on the current configuration file location
