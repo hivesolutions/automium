@@ -61,7 +61,7 @@ TIMESTAMP_PRECISION = 100.0
 """ The precision to be used for the timestamp integer
 identifier calculation (more precision less collisions) """
 
-VERSION = "0.1.13"
+VERSION = "0.1.14"
 """ The version value """
 
 RELEASE = "130"
