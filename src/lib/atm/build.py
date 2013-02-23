@@ -72,6 +72,7 @@ def configure(path = None, args = (), includes = (), libraries = (), cflags = ""
 
     # converts both the includes and the libraries tuples
     # into a list in order to make it mutable
+    args = list(args)
     includes = list(includes)
     libraries = list(libraries)
 
@@ -79,6 +80,9 @@ def configure(path = None, args = (), includes = (), libraries = (), cflags = ""
     # both the associated include and library directories
     # to the current lists (provides compatibility)
     if cross:
+        cross_base = cross.split("-", 1)[0]
+        args.insert(0, "--build=%s" % cross_base)
+        args.insert(0, "--host=%s" % cross)
         includes.insert(0, "/opt/%s/include" % cross)
         libraries.insert(0, "/opt/%s/lib" % cross)
 
