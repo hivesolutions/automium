@@ -65,10 +65,22 @@ def autogen(path = None, clean = False):
     atm.remove(autogen)
     atm.remove(makefile)
 
-def configure(path = None, args = (), includes = (), libraries = (), cflags = ""):
+def configure(path = None, args = (), includes = (), libraries = (), cflags = "", cross = None):
     # creates the pre-defined path for the configuration
     # file to be used in case it was not provided
     path = path or "./configure"
+
+    # converts both the includes and the libraries tuples
+    # into a list in order to make it mutable
+    includes = list(includes)
+    libraries = list(libraries)
+
+    # in case the cross (compilation) flag is set must add
+    # both the associated include and library directories
+    # to the current lists (provides compatibility)
+    if cross:
+        includes.insert(0, "/opt/%s/include" % cross)
+        libraries.insert(0, "/opt/%s/lib" % cross)
 
     # copies the current set of environment variables and
     # creates the includes string from the various provided
@@ -79,6 +91,7 @@ def configure(path = None, args = (), includes = (), libraries = (), cflags = ""
     for include in includes: includes_s += "-I" + include + " "
     for library in libraries: libraries_s += "-L" + library + " "
     env["CFLAGS"] = includes_s + " " + libraries_s + " " + cflags
+    if cross: env["PATH"] = "/opt/%s/bin" % cross + env.get("PATH", "")
 
     # runs the configuration process with the newly set environment
     # variables and in case the execution fails raises an exception
