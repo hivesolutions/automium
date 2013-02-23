@@ -80,14 +80,21 @@ def configure(path = None, args = (), includes = (), libraries = (), cflags = ""
     # both the associated include and library directories
     # to the current lists (provides compatibility)
     if cross:
+        # creates a lambda function that verifies if the string
+        # formating element is present in the provided string in
+        # such case the string is considered as belonging to a
+        # template (formatting may be used)
+        is_t = lambda(x): "%s" in x
+
         # retrieves the base value for the cross compilation
         # name useful for the build value of the configure
         cross_base = cross.split("-", 1)[0]
 
-        # applies the cross compilation host value to the template
+        # applies the cross compilation host value to the templates
         # based include and library values to obtain the final values
-        includes = [include % cross for include in includes]
-        libraries = [library % cross for library in libraries]
+        # in case no template elements exist the original value is set
+        includes = [is_t(include) and include % cross or include for include in includes]
+        libraries = [is_t(library) and library % cross or library for library in libraries]
 
         # adds both the build and the host parameters to the set
         # of arguments to be used in the configure command

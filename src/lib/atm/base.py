@@ -45,12 +45,20 @@ import shutil
 import cStringIO
 import subprocess
 
+CROSS = {
+    "arm-linux-gnueabihf" : "armhf",
+    "arm-unknown-linux-gnueabi-gcc" : "armhf"
+}
+""" The map defining the complete association
+between the cross compilation name as the
+architecture value associated with them """
+
 config = {}
 """ The top level global configuration to
 be used across all the definitions and
 operations """
 
-def build(config_path, arch = None):
+def build(config_path, arch = None, cross = None):
     # in case the provided config path is not valid raises an
     # error indicating the problem
     if not config_path:
@@ -59,6 +67,11 @@ def build(config_path, arch = None):
     # calls the default underlying build command to be able
     # initialize the proper structures for each os
     _build()
+
+    # in case the cross compilation value is defined and
+    # the architecture one is not tries to resolve the
+    # architecture from the cross compilation value
+    if cross: arch = arch or _rarch(cross)
 
     # tries to retrieve the proper architecture definition in
     # accordance with the specification defaulting to the pre-defined
@@ -216,6 +229,9 @@ def _arch():
     name = os.name
     if name == "nt": return _arch_nt()
     else: return _arch_default()
+
+def _rarch(cross):
+    return CROSS.get(cross, cross)
 
 def _remove_error(func, path, exc):
     excvalue = exc[1]
