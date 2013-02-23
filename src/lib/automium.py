@@ -610,7 +610,7 @@ def _create_args(name, file = None, previous = None, extend = False):
     if name: args.append(name)
     if file: args.append(file)
     if previous: args.append(previous)
-    if extend: args.extend(sys.argv[1:])
+    if extend: args.extend(sys.argv[2:])
     return args
 
 def _set_default():
