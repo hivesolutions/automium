@@ -315,6 +315,10 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     files = configuration.get("files", {"*" : "build.bat"})
     files_v = configuration.get("verify", {})
 
+    # retrieves the list of arguments to be sent to the
+    # processes to be executed (provides configuration)
+    args = options.get("args", [])
+
     # resolves the "correct" file path from the provided
     # files map, this is done using the current os name
     script = resolve_file(scripts)
@@ -409,7 +413,12 @@ def run(path, configuration, options = {}, current = None, file_c = None):
         # verification process, note that the command is only run
         # in case the name (path) exists
         process = name_v and subprocess.Popen(
-            _create_args(name_v, file = file_c, previous = previous),
+            _create_args(
+                name_v,
+                file = file_c,
+                previous = previous,
+                extend = args
+            ),
             shell = shell,
             cwd = tmp_path
         ) or None
@@ -447,7 +456,11 @@ def run(path, configuration, options = {}, current = None, file_c = None):
         # trigger the build automation process, retrieves the
         # return value that should represent the success
         process = subprocess.Popen(
-            _create_args(name, file = file_c, extend = True),
+            _create_args(
+                name,
+                file = file_c,
+                extend = args
+            ),
             stdin = None,
             stdout = log_file,
             stderr = log_file,
@@ -610,7 +623,7 @@ def _create_args(name, file = None, previous = None, extend = False):
     if name: args.append(name)
     if file: args.append(file)
     if previous: args.append(previous)
-    if extend: args.extend(sys.argv[2:])
+    if extend: args.extend(extend)
     return args
 
 def _set_default():
@@ -647,9 +660,15 @@ def main():
     # the user gets a feel of the product
     information()
 
+    # creates the list of arguments that is going to be sent to
+    # the underlying execution processes as arguments
+    args = []
+
     # starts the map containing the various options to be sent
     # to the "run" procedure
-    options = {}
+    options = {
+        "args" : args
+    }
 
     # sets the default variable values for the various options
     # to be received from the command line
@@ -662,6 +681,7 @@ def main():
     for option, argument in _options:
         if option in ("-k", "--keep"): keep = True
         elif option in ("-p", "--previous"): options["previous"] = argument
+        else: args.append(option)
 
     # "calculates" the base path for the execution of the various
     # scripts based on the current configuration file location
