@@ -614,7 +614,7 @@ def schedule(path, configuration, options):
         scheduler.enter(loop_time, 1, run, (configuration, options))
         scheduler.run()
 
-def _create_args(name, file = None, previous = None, extend = False):
+def _create_args(name, file = None, previous = None, extend = []):
     args = []
     base = os.path.basename(name)
     _name, extension = os.path.splitext(base)
