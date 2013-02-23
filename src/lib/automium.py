@@ -416,8 +416,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
             _create_args(
                 name_v,
                 file = file_c,
-                previous = previous,
-                extend = args
+                previous = previous
             ),
             shell = shell,
             cwd = tmp_path
