@@ -80,9 +80,22 @@ def configure(path = None, args = (), includes = (), libraries = (), cflags = ""
     # both the associated include and library directories
     # to the current lists (provides compatibility)
     if cross:
+        # retrieves the base value for the cross compilation
+        # name useful for the build value of the configure
         cross_base = cross.split("-", 1)[0]
+
+        # applies the cross compilation host value to the template
+        # based include and library values to obtain the final values
+        includes = [include % cross for include in includes]
+        libraries = [library % cross for library in libraries]
+
+        # adds both the build and the host parameters to the set
+        # of arguments to be used in the configure command
         args.insert(0, "--build=%s" % cross_base)
         args.insert(0, "--host=%s" % cross)
+
+        # adds the base optional paths referring the cross compilation
+        # toolchain, should be the base directories to be used)
         includes.insert(0, "/opt/%s/include" % cross)
         libraries.insert(0, "/opt/%s/lib" % cross)
 
