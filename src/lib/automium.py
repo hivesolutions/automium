@@ -365,8 +365,13 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     # in case the current path is not absolute (must) create
     # the complete path by joining the name with the current
     # path value (complete path construction)
-    if not os.path.isabs(name) : name = os.path.join(current, name)
-    if name_v and not os.path.isabs(name_v) : name_v = os.path.join(current, name_v)
+    if not os.path.isabs(name): name = os.path.join(current, name)
+    if name_v and not os.path.isabs(name_v): name_v = os.path.join(current, name_v)
+
+    # normalizes both the path to the "normal" script and the path
+    # to the verification script (for correct visualization)
+    name = os.path.normpath(name)
+    name_v = os.path.normpath(name_v)
 
     # in case the script file to be executed does not exists
     # in the current path raises an exception
