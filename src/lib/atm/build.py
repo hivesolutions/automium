@@ -138,22 +138,24 @@ def make(install = True):
     ])
     if not result == 0: raise RuntimeError("Problem executing make install not successful")
 
-def msbuild(path, dev = True):
+def msbuild(path, conf = "Release", includes = (), libraries = (), dev = True):
     # ensures that the development settings are correctly set
     # in the environment in case the development mode is set
     # then calls the msbuild command to start the process
-    dev and ensure_dev()
+    dev and ensure_dev(includes = includes, libraries = libraries)
     result = subprocess.call([
         "msbuild",
         path,
-        "/p:Configuration=Release",
+        "/p:Configuration=%s" % conf,
         "/p:VCBuildAdditionalOptions=/useenv"
     ])
     if not result == 0: raise RuntimeError("Problem executing msbuild not successful")
 
-def ensure_dev():
+def ensure_dev(includes = (), libraries = ()):
     dev_home = atm.environ("DEV_HOME", DEV_HOME)
     atm.environ_s("INCLUDE", dev_home + "\\include")
     atm.environ_s("LIB", dev_home + "\\lib")
     atm.environ_s("PATH", dev_home + "\\bin")
     atm.environ_s("PATH", dev_home + "\\util")
+    for include in includes: atm.environ_s("INCLUDE", include)
+    for library in libraries: atm.environ_s("LIB", library)
