@@ -38,10 +38,12 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import os
+import sys
 import json
 import stat
 import errno
 import shutil
+import getopt
 import cStringIO
 import subprocess
 
@@ -137,6 +139,36 @@ def cleanup():
     exists = tmp_f and os.path.exists(tmp_f) or False
     if not exists: return
     remove(tmp_f)
+
+def parse_args(args = None, names = ()):
+    # creates the map that will hold the parsed values
+    # from the provided arguments and retrieves the part
+    # of the system arguments to be used
+    values = {}
+    args = sys.argv[2:] if args == None else args
+    
+    # converts the names tuple into a list and extends
+    # it with the pre-defined automium arguments (required
+    # to provide compatibility)
+    names = list(names)
+    names.extend(("keep", "previous="))
+
+    # retrieves the complete set of names that have an
+    # associated value to be used in the parsing stage
+    names_v = [name[:-1] for name in names if name.endswith("=")]
+
+    # parses the various arguments using the normalized manned
+    # and then sets the various values in the values map
+    options, _arguments = getopt.getopt(args, "kp:", names)
+    for option, argument in options:
+        extended = option.startswith("--")
+        name = option[2:] if extended else option[1:]
+        if name in names_v: values[name] = argument
+        else: values[name] = True
+
+    # returns the map containing the various parsed values
+    # so that they can be used in a simplified manner
+    return values
 
 def load(_config):
     global config
