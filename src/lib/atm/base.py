@@ -178,6 +178,26 @@ def path(name, default = None):
     paths = config.get("paths", {})
     return paths.get(name, default)
 
+def assert_c(commands = ()):
+    missing = []
+    for command in commands:
+        try:
+            process = subprocess.Popen(
+                command.split(),
+                stdout = subprocess.PIPE,
+                stderr = subprocess.STDOUT
+            )
+            process.communicate()
+        except OSError:
+            missing.append(command)
+
+    if not missing: return
+
+    missing_s = ", ".join(missing)
+    raise RuntimeError(
+        "Required commands are missing or invalid: %s" % missing_s
+    )
+
 def _build_nt():
     pass
 
