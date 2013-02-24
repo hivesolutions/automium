@@ -195,7 +195,7 @@ def assert_c(commands = ()):
 
     missing_s = ", ".join(missing)
     raise RuntimeError(
-        "Required commands are missing or invalid: %s" % missing_s
+        "Required command(s) are missing or invalid: %s" % missing_s
     )
 
 def _build_nt():
