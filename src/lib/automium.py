@@ -684,7 +684,7 @@ def main():
     # iterates over all the available arguments to filter the
     # ones that comply with the defining capture rules, otherwise
     # the parsing of the options would raise an error
-    for arg in arg:
+    for arg in args:
         args_s = [arg_s for arg_s in ("k", "keep") if arg == arg_s]
         args_l = [arg_l for arg_l in ("p:", "previous=") if arg.startswith(arg_l)]
         result.extend(args_s)
