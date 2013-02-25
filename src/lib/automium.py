@@ -628,8 +628,8 @@ def _create_args(name, file = None, previous = None, extend = []):
     _name, extension = os.path.splitext(base)
     if extension == ".py": args.append("python")
     if name: args.append(name)
-    if file: args.append(file)
-    if previous: args.append(previous)
+    if file: args.append("--file=%s" % file)
+    if previous: args.append("--previous=%s" % previous)
     if extend: args.extend(extend)
     return args
 

@@ -145,13 +145,13 @@ def parse_args(args = None, names = ()):
     # from the provided arguments and retrieves the part
     # of the system arguments to be used
     values = {}
-    args = sys.argv[2:] if args == None else args
+    args = sys.argv[1:] if args == None else args
 
     # converts the names tuple into a list and extends
     # it with the pre-defined automium arguments (required
     # to provide compatibility)
     names = list(names)
-    names.extend(("keep", "previous="))
+    names.extend(("keep", "previous=", "file="))
 
     # retrieves the complete set of names that have an
     # associated value to be used in the parsing stage
@@ -159,7 +159,7 @@ def parse_args(args = None, names = ()):
 
     # parses the various arguments using the normalized manned
     # and then sets the various values in the values map
-    options, _arguments = getopt.getopt(args, "kp:", names)
+    options, _arguments = getopt.getopt(args, "kp:f:", names)
     for option, argument in options:
         extended = option.startswith("--")
         name = option[2:] if extended else option[1:]
