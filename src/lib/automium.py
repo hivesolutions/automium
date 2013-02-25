@@ -635,7 +635,7 @@ def _create_args(name, file = None, previous = None, extend = []):
 
 def _set_default():
     if os.path.exists("build.json"): sys.argv.insert(1, "build.json")
-    else: raise RuntimeError("missing build file (invalid number of arguments)")
+    else: raise RuntimeError("missing build file, using default location")
 
 def _remove_error(func, path, exc):
     excvalue = exc[1]
@@ -657,7 +657,7 @@ def main():
     # that it exists and is valid
     file_path = sys.argv[1]
     if not os.path.exists(file_path):
-        raise RuntimeError("missing build file (%s)" % file_path)
+        raise RuntimeError("missing build file '%s'" % file_path)
 
     # open the configuration file and loads the contents
     # from it assuming it's a json based file
