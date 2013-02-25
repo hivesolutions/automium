@@ -649,12 +649,18 @@ def main():
     # retrieves the number of arguments provided
     # to the the current execution script
     arg_count = len(sys.argv)
-    build_default = arg_count < 2 or not sys.argv[1].endswith(".json")
+    build_default = arg_count < 2
     if build_default: _set_default()
 
     # retrieves the path to the configuration file
-    # to be used in the current execution
+    # to be used in the current execution and validated
+    # that it exists and is valid
     file_path = sys.argv[1]
+    if not os.path.exists(file_path):
+        raise RuntimeError("missing build file (%s)" % file_path)
+
+    # open the configuration file and loads the contents
+    # from it assuming it's a json based file
     file = open(file_path, "rb")
     try: configuration = json.load(file)
     finally: file.close()
