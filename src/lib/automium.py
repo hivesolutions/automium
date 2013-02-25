@@ -61,7 +61,7 @@ TIMESTAMP_PRECISION = 100.0
 """ The precision to be used for the timestamp integer
 identifier calculation (more precision less collisions) """
 
-VERSION = "0.1.22"
+VERSION = "0.1.23"
 """ The version value """
 
 RELEASE = "130"
@@ -70,7 +70,7 @@ RELEASE = "130"
 BUILD = "1"
 """ The build value """
 
-RELEASE_DATE = "16 February 2013"
+RELEASE_DATE = "25 February 2013"
 """ The release date value """
 
 BRANDING_TEXT = "Hive Automium System %s (Hive Solutions Lda. r%s:%s %s)"
