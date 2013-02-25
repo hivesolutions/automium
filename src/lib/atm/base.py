@@ -146,7 +146,7 @@ def parse_args(args = None, names = ()):
     # of the system arguments to be used
     values = {}
     args = sys.argv[2:] if args == None else args
-    
+
     # converts the names tuple into a list and extends
     # it with the pre-defined automium arguments (required
     # to provide compatibility)

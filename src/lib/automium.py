@@ -317,7 +317,9 @@ def run(path, configuration, options = {}, current = None, file_c = None):
 
     # retrieves the list of arguments to be sent to the
     # processes to be executed (provides configuration)
+    # then creates a string with it's values
     args = options.get("args", [])
+    args_s = " ".join(args)
 
     # resolves the "correct" file path from the provided
     # files map, this is done using the current os name
@@ -576,6 +578,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
         "end_time" : timestamp_f,
         "delta" : delta,
         "log" : log_s,
+        "args" : args_s,
         "result" : return_value == 0
     }
     description_path = os.path.join(build_path, "description.json")
@@ -673,10 +676,24 @@ def main():
     # to be received from the command line
     keep = False
 
+    # retrieves the set of valid arguments for parsing and starts
+    # the list that will containing the results of the filtering
+    args = sys.argv[2:]
+    result = []
+
+    # iterates over all the available arguments to filter the
+    # ones that comply with the defining capture rules, otherwise
+    # the parsing of the options would raise an error
+    for arg in arg:
+        args_s = [arg_s for arg_s in ("k", "keep") if arg == arg_s]
+        args_l = [arg_l for arg_l in ("p:", "previous=") if arg.startswith(arg_l)]
+        result.extend(args_s)
+        result.extend(args_l)
+
     # parses the various options from the command line and then
     # iterates over the map of them top set the appropriate values
     # for the variables associated with the options
-    _options, arguments = getopt.getopt(sys.argv[2:], "kp:", ["keep", "previous="])
+    _options, _arguments = getopt.getopt(result, "kp:", ["keep", "previous="])
     for option, argument in _options:
         if option in ("-k", "--keep"): keep = True
         elif option in ("-p", "--previous"): options["previous"] = argument
@@ -684,7 +701,7 @@ def main():
     # sets the arguments to be passed to the underlying processes
     # to be created as the set of arguments that were not interpreted
     # as options (and as such must be passed to the lower processes)
-    options["args"] = arguments
+    options["args"] = args
 
     # "calculates" the base path for the execution of the various
     # scripts based on the current configuration file location
