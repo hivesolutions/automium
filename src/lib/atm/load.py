@@ -19,6 +19,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Hive Automium System. If not, see <http://www.gnu.org/licenses/>.
 
+__author__ = "João Magalhães <joamag@hive.pt>"
+""" The author(s) of the module """
+
 __version__ = "1.0.0"
 """ The version of the module """
 
@@ -34,22 +37,24 @@ __copyright__ = "Copyright (c) 2008-2012 Hive Solutions Lda."
 __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
-import base
-import build
-import environ
-import exceptions
-import hash
-import load
-import pack
-import repo
-import static
+import os
+import urllib2
+import urlparse
 
-from base import *
-from build import *
-from environ import *
-from exceptions import *
-from hash import *
-from load import *
-from pack import *
-from repo import *
-from static import *
+DEFAULT_NAME = "download"
+""" The default name to be used for the file in case
+no name is possible to be extracted from the url """
+
+def download(url, file_path = None):
+    url_p = urlparse.urlparse(url)
+    path = url_p.path
+
+    file_path = file_path or os.path.basename(path)
+    file_path = file_path or DEFAULT_NAME
+
+    response = urllib2.urlopen(url)
+    contents = response.read()
+
+    file = open(file_path, "wb")
+    try: file.write(contents)
+    finally: file.close()
