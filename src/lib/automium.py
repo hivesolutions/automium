@@ -633,10 +633,6 @@ def _create_args(name, file = None, previous = None, extend = []):
     if extend: args.extend(extend)
     return args
 
-def _set_default():
-    if os.path.exists("build.json"): sys.argv.insert(1, "build.json")
-    else: raise RuntimeError("missing build file, using default location")
-
 def _remove_error(func, path, exc):
     excvalue = exc[1]
     if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
@@ -646,29 +642,9 @@ def _remove_error(func, path, exc):
         raise
 
 def main():
-    # retrieves the number of arguments provided
-    # to the the current execution script
-    arg_count = len(sys.argv)
-    build_default = arg_count < 2
-    if build_default: _set_default()
-
-    # retrieves the path to the configuration file
-    # to be used in the current execution and validated
-    # that it exists and is valid
-    file_path = sys.argv[1]
-    if not os.path.exists(file_path):
-        raise RuntimeError("missing build file '%s'" % file_path)
-
-    # open the configuration file and loads the contents
-    # from it assuming it's a json based file
-    file = open(file_path, "rb")
-    try: configuration = json.load(file)
-    finally: file.close()
-
-    # retrieves the current working directory and uses it to
-    # construct the final configuration file path
-    cwd = os.getcwd()
-    file_path_f = os.path.join(cwd, file_path)
+    # sets the default path to the configuration file to be used
+    # for the current automium "session"
+    file_path = "build.json"
 
     # displays the branding information on the screen so that
     # the user gets a feel of the product
@@ -684,25 +660,43 @@ def main():
 
     # retrieves the set of valid arguments for parsing and starts
     # the list that will containing the results of the filtering
-    args = sys.argv[2:]
+    args = sys.argv[1:]
     result = []
 
     # iterates over all the available arguments to filter the
     # ones that comply with the defining capture rules, otherwise
     # the parsing of the options would raise an error
     for arg in args:
-        args_s = [arg_s for arg_s in ("k", "keep") if arg == arg_s]
-        args_l = [arg_l for arg_l in ("p:", "previous=") if arg.startswith(arg_l)]
+        args_s = [arg for arg_s in ("-k", "--keep") if arg == arg_s]
+        args_l = [arg for arg_l in ("-f:", "-p:", "--file=", "--previous=") if arg.startswith(arg_l)]
         result.extend(args_s)
         result.extend(args_l)
 
     # parses the various options from the command line and then
     # iterates over the map of them top set the appropriate values
     # for the variables associated with the options
-    _options, _arguments = getopt.getopt(result, "kp:", ["keep", "previous="])
+    _options, _arguments = getopt.getopt(result, "kf:p:", ["keep", "file=", "previous="])
     for option, argument in _options:
         if option in ("-k", "--keep"): keep = True
+        elif option in ("-f", "--file"): file_path = argument
         elif option in ("-p", "--previous"): options["previous"] = argument
+
+    # verifies if the path to the configuration file that was
+    # set exists in the file system in case it does not raises
+    # an exception indicating the problem
+    if not os.path.exists(file_path):
+        raise RuntimeError("missing build file '%s'" % file_path)
+
+    # open the configuration file and loads the contents
+    # from it assuming it's a json based file
+    file = open(file_path, "rb")
+    try: configuration = json.load(file)
+    finally: file.close()
+
+    # retrieves the current working directory and uses it to
+    # construct the final configuration file path
+    cwd = os.getcwd()
+    file_path_f = os.path.join(cwd, file_path)
 
     # sets the arguments to be passed to the underlying processes
     # to be created as the set of arguments that were not interpreted
