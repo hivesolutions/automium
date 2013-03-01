@@ -62,22 +62,26 @@ TIMESTAMP_PRECISION = 100.0
 identifier calculation (more precision less collisions) """
 
 VERSION = "0.1.26"
-""" The version value """
+""" The current version value for the automium executable """
 
 RELEASE = "130"
-""" The release value """
+""" The release value, should be an internal value related
+with the build process """
 
 BUILD = "1"
-""" The build value """
+""" The build value, representing the sub release value
+existent in the build process """
 
 RELEASE_DATE = "25 February 2013"
-""" The release date value """
+""" The release date value for the current version """
 
 BRANDING_TEXT = "Hive Automium System %s (Hive Solutions Lda. r%s:%s %s)"
-""" The branding text value """
+""" The branding text value the template based values
+should be defined as constants """
 
 VERSION_PRE_TEXT = "Python "
-""" The version pre text value """
+""" The version pre text value, that appears before the printing
+of the branding text second line """
 
 DEBUG = True
 """ The current verbose level control, in case this flag
