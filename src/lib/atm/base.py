@@ -288,7 +288,9 @@ def _arch():
     else: return _arch_default()
 
 def _rarch(cross):
-    return CROSS.get(cross, cross)
+    arch = CROSS.get(cross, None)
+    arch = arch or cross.split("-", 1)[0]
+    return arch
 
 def _remove_error(func, path, exc):
     excvalue = exc[1]
