@@ -49,8 +49,12 @@ import subprocess
 
 CROSS = {
     "arm-linux-gnueabihf" : "armhf",
+    "arm-none-linux-gnueabi" : "armhf",
+    "arm-none-linux-gnueabihf" : "armhf",
     "arm-unknown-linux-gnueabi" : "armhf",
-    "arm-unknown-linux-gnueabihf" : "armhf"
+    "arm-unknown-linux-gnueabihf" : "armhf",
+    "arm-rasp-linux-gnueabi" : "armhf",
+    "arm-rasp-linux-gnueabihf" : "armhf"
 }
 """ The map defining the complete association
 between the cross compilation name as the
