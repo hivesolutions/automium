@@ -35,7 +35,7 @@ SCRIPT_DIRECTORY_PATH=$(dirname $(readlink -f $0))
 # executes the "parent" script file that should
 # exist in the current directory with the provided
 # arguments (argument pipe)
-"$SCRIPT_DIRECTORY_PATH/$SCRIPT_NAME" $*
+"$SCRIPT_DIRECTORY_PATH/$SCRIPT_NAME" "$@"
 
 # exits the process
 exit $?
