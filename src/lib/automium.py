@@ -386,11 +386,11 @@ def run(path, configuration, options = {}, current = None, file_c = None):
 
     # in case the script file to be executed does not exists
     # in the current path raises an exception
-    if not os.path.exists(name): raise RuntimeError("build script '%s' not found" % name)
+    if not os.path.exists(name): raise RuntimeError("Build script '%s' not found" % name)
 
     # in case the verify script file to be executed does not exists
     # in the current path raises an exception
-    if name_v and not os.path.exists(name_v): raise RuntimeError("verify script '%s' not found" % name_v)
+    if name_v and not os.path.exists(name_v): raise RuntimeError("Verify script '%s' not found" % name_v)
 
     # in case the temporary path already exists must remove it to
     # avoid possible duplicated files problem and then recreates
@@ -754,7 +754,7 @@ def main():
     # set exists in the file system in case it does not raises
     # an exception indicating the problem
     if not os.path.exists(file_path):
-        raise RuntimeError("missing build file '%s'" % file_path)
+        raise RuntimeError("Missing build file '%s'" % file_path)
 
     # open the configuration file and loads the contents
     # from it assuming it's a json based file
