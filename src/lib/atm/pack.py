@@ -113,6 +113,14 @@ def capsule(path, data_path, name = None, description = None):
     ])
     if not result == 0: raise RuntimeError("Capsule extend operation failed")
 
+def colony(descriptor = "plugin.json"):
+    result = subprocess.call([
+        "colony_admin",
+        "build",
+        descriptor
+    ])
+    if not result == 0: raise RuntimeError("Colony build operation failed")
+
 def zip(name, names = None):
     path = os.getcwd()
     names = names or os.listdir(path)
