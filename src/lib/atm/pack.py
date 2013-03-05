@@ -93,7 +93,7 @@ def deb(path = None, **kwargs):
     if not result == 0: raise RuntimeError("Debian file package operation failed")
 
 def capsule(path, data_path, name = None, description = None):
-    name = name or atm.conf("name", "default")
+    name = name or atm.conf("name_cap", "default")
     description = description or atm.conf("description", "default")
 
     result = subprocess.call([

@@ -151,6 +151,15 @@ def msbuild(path, conf = "Release", includes = (), libraries = (), dev = True):
     ])
     if not result == 0: raise RuntimeError("Problem executing msbuild not successful")
 
+def pysdist(setup = "setup.py"):
+    result = subprocess.call([
+        "python",
+        setup,
+        "process",
+        "sdist"
+    ])
+    if not result == 0: raise RuntimeError("Python sdist build failed")
+
 def ensure_dev(includes = (), libraries = ()):
     dev_home = atm.environ("DEV_HOME", DEV_HOME)
     atm.environ_s("INCLUDE", dev_home + "\\include")

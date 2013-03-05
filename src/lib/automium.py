@@ -355,6 +355,10 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     timestamp_p = int(timestamp * TIMESTAMP_PRECISION)
     timestamp_sp = str(timestamp_p)
 
+    # sets the current timestamp string with precision as
+    # the identifier for the current build
+    build_id = timestamp_sp
+
     # sets the appropriate shell execution flag according
     # to the currently executing operative system
     if os.name == "nt": shell = False
@@ -366,7 +370,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     tmp_path = os.path.join(current, "tmp")
     log_path = os.path.join(tmp_path, "automium.log")
     builds_path = os.path.join(current, "builds")
-    build_path = os.path.join(builds_path, "%d" % timestamp_p)
+    build_path = os.path.join(builds_path, "%s" % build_id)
 
     # in case the current path is not absolute (must) create
     # the complete path by joining the name with the current
@@ -376,8 +380,8 @@ def run(path, configuration, options = {}, current = None, file_c = None):
 
     # normalizes both the path to the "normal" script and the path
     # to the verification script (for correct visualization)
-    name = os.path.normpath(name)
-    name_v = os.path.normpath(name_v)
+    name = name and os.path.normpath(name)
+    name_v = name_v and os.path.normpath(name_v)
 
     # in case the script file to be executed does not exists
     # in the current path raises an exception
@@ -573,7 +577,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     # to be used to output this information into a descriptive
     # json file that may be interpreted by third parties
     description = {
-        "id" : timestamp_sp,
+        "id" : build_id,
         "system" : os_name,
         "version" : version,
         "size" : size,

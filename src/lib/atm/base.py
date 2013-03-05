@@ -97,7 +97,9 @@ def build(config_path, arch = None, cross = None):
     # to the pre-defined values in some cases
     name = _config.get("name", "default")
     version = _config.get("version", "0.0.0")
-    name_arc = name + "-" + version + "-" + arch
+    name_cap = name and name[0].upper() + name[1:]
+    name_ver = name + "-" + version
+    name_arc = name_ver + "-" + arch
     name_raw = name_arc + "-raw"
     name_src = name_arc + "-src"
 
@@ -125,6 +127,8 @@ def build(config_path, arch = None, cross = None):
     _config["paths"] = paths
     _config["architecture"] = arch
     _config["arch"] = arch
+    _config["name_cap"] = name_cap
+    _config["name_ver"] = name_ver
     _config["name_arc"] = name_arc
     _config["name_raw"] = name_raw
     _config["name_src"] = name_src
