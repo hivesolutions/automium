@@ -46,6 +46,7 @@ import errno
 import sched
 import shutil
 import getopt
+import zipfile
 import datetime
 import subprocess
 
@@ -649,6 +650,64 @@ def _remove_error(func, path, exc):
     else:
         raise
 
+def create(path, configuration, file_c):
+    # retrieves the series of configuration values used
+    # in the running, defaulting to the pre defined values
+    # in case they are not defined
+    name = configuration.get("name", "default")
+    scripts = configuration.get("scripts", {})
+    files = configuration.get("files", {})
+    files_v = configuration.get("verify", {})
+
+    # creates the name of the package file from the base name
+    # described in the configuration and creates the complete
+    # list of names to be writen to the package file
+    name_pack = name + ".atm"
+    names = scripts.values() + files.values() + files_v.values()
+
+    # prints the command line information
+    print("------------------------------------------------------------------------")
+    print("Packing '%s' into '%s'..." % (name, name_pack))
+
+    # retrieves the current timestamp and then converts
+    # it into the default integer "view"
+    timestamp = time.time()
+    timestamp_s = int(timestamp)
+
+    # opens the "target" zip file for write operation, then
+    # iterates over all the names of files and adds them into
+    # the pack file, one file step is "used" to add the meta
+    # build file to the root of the file
+    zip = zipfile.ZipFile(name_pack, "w")
+    try:
+        for name in names:
+            name_f = os.path.join(path, name)
+            zip.write(name_f, name)
+        zip.write(file_c, "build.json")
+    finally:
+        zip.close()
+
+    # retrieves the (final) timestamp then converts it into the
+    # default integer base value and then calculates the delta values
+    timestamp_f = time.time()
+    timestamp_f = int(timestamp_f)
+    delta = timestamp_f - timestamp_s
+
+    # retrieves the current date time information and
+    # then formats it according to the value to be displayed
+    now = datetime.datetime.now()
+    now_string = now.strftime("%d/%m/%y %H:%M:%S")
+
+    # calculate the string that describes the delta time in
+    # an easy to understand value
+    _delta_string = delta_string(delta)
+
+    # prints the command line information and returns the control
+    # to the caller method in success (build completed)
+    print("Total time for pack operation %s" % _delta_string)
+    print("Finished automation file packing at %s" % now_string)
+    return True
+
 def main():
     # sets the default path to the configuration file to be used
     # for the current automium "session"
@@ -664,6 +723,7 @@ def main():
 
     # sets the default variable values for the various options
     # to be received from the command line
+    pack = False
     keep = False
 
     # retrieves the set of valid arguments for parsing and starts
@@ -675,7 +735,7 @@ def main():
     # ones that comply with the defining capture rules, otherwise
     # the parsing of the options would raise an error
     for arg in args:
-        args_s = [arg for arg_s in ("-k", "--keep") if arg == arg_s]
+        args_s = [arg for arg_s in ("-c", "-k", "--pack", "--keep") if arg == arg_s]
         args_l = [arg for arg_l in ("-f:", "-p:", "--file=", "--previous=") if arg.startswith(arg_l)]
         result.extend(args_s)
         result.extend(args_l)
@@ -683,9 +743,10 @@ def main():
     # parses the various options from the command line and then
     # iterates over the map of them top set the appropriate values
     # for the variables associated with the options
-    _options, _arguments = getopt.getopt(result, "kf:p:", ["keep", "file=", "previous="])
+    _options, _arguments = getopt.getopt(result, "ckf:p:", ["pack", "keep", "file=", "previous="])
     for option, argument in _options:
-        if option in ("-k", "--keep"): keep = True
+        if option in ("-c", "--pack"): pack = True
+        elif option in ("-k", "--keep"): keep = True
         elif option in ("-f", "--file"): file_path = argument
         elif option in ("-p", "--previous"): options["previous"] = argument
 
@@ -715,9 +776,11 @@ def main():
     # scripts based on the current configuration file location
     path = os.path.dirname(file_path)
 
-    # in case the keep flag value is set starts the process in
+    # in case the pack flag is set creates the packed file otherwise
+    # and in case the keep flag value is set starts the process in
     # schedule mode otherwise runs "just" one iteration
-    if keep: schedule(path, configuration, options)
+    if pack: create(path, configuration, file_path_f)
+    elif keep: schedule(path, configuration, options)
     else: run(path, configuration, options = options, file_c = file_path_f)
 
 def main_s():
