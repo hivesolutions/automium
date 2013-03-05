@@ -8,3 +8,5 @@ Simple system for running build automation scripts.
     atm --keep
     atm --file=build_extra.json
     atm --keep --file=build_extra.json
+    atm --create
+    atm --create --file=build_extra.json
