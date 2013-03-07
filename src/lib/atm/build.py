@@ -65,10 +65,15 @@ def autogen(path = None, clean = False):
     atm.remove(autogen)
     atm.remove(makefile)
 
-def configure(path = None, args = (), includes = (), libraries = (), cflags = "", cross = None):
+def configure(path = None, args = (), includes = (), libraries = (), cflags = None, cross = None):
     # creates the pre-defined path for the configuration
     # file to be used in case it was not provided
     path = path or "./configure"
+
+    # in case the provided cflags are not valid or set sets
+    # the value as and empty string, in order to avoid any
+    # string manipulation problem
+    cflags = cflags or ""
 
     # converts both the includes and the libraries tuples
     # into a list in order to make it mutable
