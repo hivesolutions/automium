@@ -15,3 +15,7 @@ Simple system for running build automation scripts.
 
 For linux based systems `dpkg-architecture` util is required to correctly retrieve the architecture for the system,
 in case the utility does not exists an erroneous value may be present for build artifacts.
+
+To install the command under Ubuntu Linux use the folowing command:
+
+    apt-get install dpkg-dev
