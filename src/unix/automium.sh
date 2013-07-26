@@ -33,7 +33,7 @@ RELATIVE_PATH=../lib/
 SCRIPT_NAME=automium.py
 
 # retrieves the script directory path
-SCRIPT_DIRECTORY_PATH=$(dirname $(readlink -f $0))
+SCRIPT_DIRECTORY_PATH=$(dirname $(readlink $0 || echo $0))
 
 # executes the initial python script with
 # the provided arguments

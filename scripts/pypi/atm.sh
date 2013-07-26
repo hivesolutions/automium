@@ -30,7 +30,7 @@
 SCRIPT_NAME=automium.sh
 
 # retrieves the script directory path
-SCRIPT_DIRECTORY_PATH=$(dirname $(readlink -f $0))
+SCRIPT_DIRECTORY_PATH=$(dirname $(readlink $0 || echo $0))
 
 # executes the "parent" script file that should
 # exist in the current directory with the provided
