@@ -156,11 +156,11 @@ def msbuild(path, conf = "Release", includes = (), libraries = (), dev = True):
     ])
     if not result == 0: raise RuntimeError("Problem executing msbuild not successful")
 
-def pysdist(setup = "setup.py"):
+def pysdist(setup = "setup.py", process = False):
     result = subprocess.call([
         "python",
         setup,
-        "process",
+        "process" if process else "clean",
         "sdist"
     ])
     if not result == 0: raise RuntimeError("Python sdist build failed")
