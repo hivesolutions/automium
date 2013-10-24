@@ -115,7 +115,7 @@ def capsule(path, data_path, name = None, description = None):
 
 def colony(descriptor = "plugin.json"):
     result = subprocess.call([
-        "colony_admin",
+        "colony_adm",
         "build",
         descriptor
     ])

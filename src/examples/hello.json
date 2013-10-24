@@ -1,6 +1,6 @@
 {
-    "name" : "Viriatum HTTP Server",
-    "description" : "Automation script for binaries and source code of viriatum",
+    "name" : "Hello Program",
+    "description" : "Description of the hello program",
     "files" : {
         "win32" : "build.bat"
     },
