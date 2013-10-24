@@ -114,8 +114,11 @@ def capsule(path, data_path, name = None, description = None):
     if not result == 0: raise RuntimeError("Capsule extend operation failed")
 
 def colony(descriptor = "plugin.json"):
+    name = os.name
+    if name == "nt": script = "colony_admin.bat"
+    else: script = "colony_admin.sh"
     result = subprocess.call([
-        "colony_admin",
+        script,
         "build",
         descriptor
     ])
