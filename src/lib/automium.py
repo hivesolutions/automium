@@ -62,7 +62,7 @@ TIMESTAMP_PRECISION = 100.0
 """ The precision to be used for the timestamp integer
 identifier calculation (more precision less collisions) """
 
-VERSION = "0.1.30"
+VERSION = "0.1.31"
 """ The current version value for the automium executable """
 
 RELEASE = "130"
