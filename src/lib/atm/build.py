@@ -119,7 +119,8 @@ def configure(path = None, args = (), includes = (), libraries = (), cflags = No
     libraries_s = ""
     for include in includes: includes_s += "-I" + include + " "
     for library in libraries: libraries_s += "-L" + library + " "
-    env["CFLAGS"] = includes_s + " " + libraries_s + " " + cflags
+    cflags = (includes_s + " " + libraries_s + " " + cflags).strip()
+    if cflags: env["CFLAGS"] = cflags
     if cross: env["PATH"] = "/opt/%s/bin" % cross + ":" + env.get("PATH", "")
 
     # runs the configuration process with the newly set environment
