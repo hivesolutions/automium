@@ -73,7 +73,7 @@ def configure(path = None, args = (), includes = (), libraries = (), cflags = No
     # in case the provided cflags are not valid or set sets
     # the value as and empty string, in order to avoid any
     # string manipulation problem
-    cflags = cflags or env.get("CFLAGS", "")
+    cflags = cflags or os.environ.get("CFLAGS", "")
 
     # converts both the includes and the libraries tuples
     # into a list in order to make it mutable
