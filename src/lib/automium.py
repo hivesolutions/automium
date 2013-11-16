@@ -661,7 +661,7 @@ def create(path, configuration, file_c):
 
     # creates the name of the package file from the base name
     # described in the configuration and creates the complete
-    # list of names to be writen to the package file
+    # list of names to be written to the package file
     name_pack = name + ".atm"
     names = scripts.values() + files.values() + files_v.values()
 
