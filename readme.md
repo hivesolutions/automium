@@ -8,7 +8,7 @@ The basic usage of the automium utility assumes the location of the
 build file under `build.json`
 
     atm
-    
+
 In order to be able to change the default build file the `--extra` file
 parameter must be provided.
 
