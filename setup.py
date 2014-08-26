@@ -56,7 +56,7 @@ setuptools.setup(
     description = "Automium System",
     license = "GNU General Public License (GPL), Version 3",
     keywords = "automium build automation",
-    url = "http://automium.com",
+    url = "http://automium.hive.pt",
     zip_safe = True,
     packages = [
         "atm"

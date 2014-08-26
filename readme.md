@@ -1,4 +1,4 @@
-# [Automium Build Automation](http://automium.com)
+# [Automium Build Automation](http://automium.hive.pt)
 
 Simple system for running build automation scripts.
 
