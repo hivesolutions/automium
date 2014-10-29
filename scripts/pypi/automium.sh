@@ -24,7 +24,7 @@
 # __revision__  = $LastChangedRevision$
 # __date__      = $LastChangedDate$
 # __copyright__ = Copyright (c) 2008-2014 Hive Solutions Lda.
-# __license__   = GNU General Public License (GPL), Version 3
+# __license__   = Apache License, Version 2.0
 
 # sets the temporary variables
 PYTHON_PATH=python
