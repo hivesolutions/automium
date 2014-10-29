@@ -47,7 +47,7 @@ setuptools.setup(
     author_email = "development@hive.pt",
     description = "Automium System",
     license = "Apache License, Version 2.0",
-    keywords = "automium build automation",
+    keywords = "automium build automation console",
     url = "http://automium.hive.pt",
     zip_safe = True,
     packages = [
