@@ -35,23 +35,25 @@ __license__ = "GNU General Public License (GPL), Version 3"
 """ The license for the module """
 
 import base
-import build
-import environ
 import exceptions
 import hash
-import load
 import pack
 import repo
 import static
 import test
 
-from base import *
-from build import *
-from environ import *
+import build as _build
+import environ as _environ
+import load as _load
+
+from base import build, cleanup, parse_args, load, create_paths, move, copy, remove,\
+    conf, conf_s, path, assert_c
+from build import autogen, configure, make, msbuild, pysdist, ensure_dev
+from environ import environ_s, environ
 from exceptions import *
-from hash import *
-from load import *
-from pack import *
-from repo import *
-from static import *
-from test import *
+from hash import Hash, hash_d
+from load import download
+from pack import compress, deb, capsule, colony, zip, tar
+from repo import git, git_v
+from static import DEB_CONTROL
+from test import pytest
