@@ -64,7 +64,7 @@ setuptools.setup(
         "automium"
     ],
     package_dir = {
-        "" : os.path.normpath("src/lib")
+        "" : os.path.normpath("src")
     },
     classifiers = [
         "Development Status :: 5 - Production/Stable",
