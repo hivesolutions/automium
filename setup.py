@@ -53,18 +53,16 @@ setuptools.setup(
     packages = [
         "atm"
     ],
-    scripts = [
-        "scripts/pypi/atm.bat",
-        "scripts/pypi/atm.sh",
-        "scripts/pypi/automium_pypi.py",
-        "scripts/pypi/automium.bat",
-        "scripts/pypi/automium.sh"
-    ],
     py_modules = [
         "automium"
     ],
     package_dir = {
         "" : os.path.normpath("src")
+    },
+    entry_points = {
+        "console_scripts" : [
+            "atm = automium:main"
+        ]
     },
     classifiers = [
         "Development Status :: 5 - Production/Stable",
