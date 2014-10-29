@@ -39,3 +39,7 @@ in case the utility does not exists an erroneous value may be present for build 
 To install the command under Ubuntu Linux use the folowing command:
 
     apt-get install dpkg-dev
+
+## License
+
+Automium is currently licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/).
