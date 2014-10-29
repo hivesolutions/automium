@@ -42,7 +42,7 @@ import setuptools
 
 setuptools.setup(
     name = "automium",
-    version = "0.1.33",
+    version = "0.2.0",
     author = "Hive Solutions Lda.",
     author_email = "development@hive.pt",
     description = "Automium System",
