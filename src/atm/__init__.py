@@ -34,26 +34,26 @@ __copyright__ = "Copyright (c) 2008-2014 Hive Solutions Lda."
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
-import base
-import exceptions
-import hash
-import pack
-import repo
-import static
-import test
+from . import base
+from . import exceptions
+from . import hash
+from . import pack
+from . import repo
+from . import static
+from . import test
 
-import build as _build
-import environ as _environ
-import load as _load
+from . import build as _build
+from . import environ as _environ
+from . import load as _load
 
-from base import build, cleanup, parse_args, load, create_paths, move, copy, remove,\
+from .base import build, cleanup, parse_args, load, create_paths, move, copy, remove,\
     conf, conf_s, path, assert_c
-from build import autogen, configure, make, msbuild, pysdist, ensure_dev
-from environ import environ_s, environ
-from exceptions import *
-from hash import Hash, hash_d
-from load import download
-from pack import compress, deb, capsule, colony, zip, tar
-from repo import git, git_v
-from static import DEB_CONTROL
-from test import pytest
+from .build import autogen, configure, make, msbuild, pysdist, ensure_dev
+from .environ import environ_s, environ
+from .exceptions import *
+from .hash import Hash, hash_d
+from .load import download
+from .pack import compress, deb, capsule, colony, zip, tar
+from .repo import git, git_v
+from .static import DEB_CONTROL
+from .test import pytest

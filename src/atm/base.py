@@ -44,7 +44,7 @@ import stat
 import errno
 import shutil
 import getopt
-import cStringIO
+import legacy
 import subprocess
 
 CROSS = {
@@ -256,7 +256,7 @@ def _arch_default():
     # creates the buffer that will hold the data resulting
     # from the output of the architecture information command
     # and then starts the map that contains each of the variables
-    buffer = cStringIO.StringIO()
+    buffer = legacy.StringIO()
     variables = {}
 
     try:

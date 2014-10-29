@@ -59,6 +59,9 @@ setuptools.setup(
     package_dir = {
         "" : os.path.normpath("src")
     },
+    install_requires = [
+        "legacy"
+    ],
     entry_points = {
         "console_scripts" : [
             "atm = automium:main"

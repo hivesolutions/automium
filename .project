@@ -3,6 +3,7 @@
 	<name>automium</name>
 	<comment></comment>
 	<projects>
+		<project>legacy</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

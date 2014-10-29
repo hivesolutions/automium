@@ -42,7 +42,8 @@ import subprocess
 
 import copy as _copy
 
-import atm
+from atm import base
+from atm import _environ
 
 DEV_HOME = "\\dev"
 """ The default directory to the development directory
@@ -61,9 +62,9 @@ def autogen(path = None, clean = False):
     cache = os.path.join(base_path, "autom4te.cache")
     autogen = os.path.join(base_path, "autogen.sh")
     makefile = os.path.join(base_path, "Makefile-autoconfig")
-    atm.remove(cache)
-    atm.remove(autogen)
-    atm.remove(makefile)
+    base.remove(cache)
+    base.remove(autogen)
+    base.remove(makefile)
 
 def configure(path = None, args = (), includes = (), libraries = (), cflags = None, cross = None):
     # creates the pre-defined path for the configuration
@@ -167,10 +168,10 @@ def pysdist(setup = "setup.py", process = False):
     if not result == 0: raise RuntimeError("Python sdist build failed")
 
 def ensure_dev(includes = (), libraries = ()):
-    dev_home = atm.environ("DEV_HOME", DEV_HOME)
-    atm.environ_s("INCLUDE", dev_home + "\\include")
-    atm.environ_s("LIB", dev_home + "\\lib")
-    atm.environ_s("PATH", dev_home + "\\bin")
-    atm.environ_s("PATH", dev_home + "\\util")
-    for include in includes: atm.environ_s("INCLUDE", include)
-    for library in libraries: atm.environ_s("LIB", library)
+    dev_home = _environ.environ("DEV_HOME", DEV_HOME)
+    _environ.environ_s("INCLUDE", dev_home + "\\include")
+    _environ.environ_s("LIB", dev_home + "\\lib")
+    _environ.environ_s("PATH", dev_home + "\\bin")
+    _environ.environ_s("PATH", dev_home + "\\util")
+    for include in includes: _environ.environ_s("INCLUDE", include)
+    for library in libraries: _environ.environ_s("LIB", library)

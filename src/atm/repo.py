@@ -40,13 +40,13 @@ __license__ = "Apache License, Version 2.0"
 import os
 import subprocess
 
-import atm
+from atm import base
 
 def git(url = None, path = None, clean = False):
     # retrieves the various default values from the
     # configuration in case their were not provided
-    url = url or atm.conf("repo", None)
-    path = path or atm.path("repo", None)
+    url = url or base.conf("repo", None)
+    path = path or base.path("repo", None)
 
     result = subprocess.call([
         "git",
@@ -66,13 +66,13 @@ def git(url = None, path = None, clean = False):
     # sanitize the repository from extra metadata files
     git_path = os.path.join(path, ".git")
     gitignore_path = os.path.join(path, ".gitignore")
-    atm.remove(git_path)
-    atm.remove(gitignore_path)
+    base.remove(git_path)
+    base.remove(gitignore_path)
 
 def git_v(_version, url = None):
     # retrieves the various default values from the
     # configuration in case their were not provided
-    url = url or atm.conf("repo", None)
+    url = url or base.conf("repo", None)
 
     # clones the repository to the target (verify) directory
     # to be used for the processing of the log

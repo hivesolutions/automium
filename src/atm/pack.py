@@ -42,16 +42,17 @@ import zipfile
 import tarfile
 import subprocess
 
-import atm
+from atm import base
+from atm import static
 
 def compress(folder, target = None):
     zip(folder + ".zip", (folder,))
     tar(folder + ".tar", (folder,))
     tar(folder + ".tar.gz", (folder,), compress = True)
     if not target: return
-    atm.move(folder + ".zip", target)
-    atm.move(folder + ".tar", target)
-    atm.move(folder + ".tar.gz", target)
+    base.move(folder + ".zip", target)
+    base.move(folder + ".tar", target)
+    base.move(folder + ".tar.gz", target)
 
 def deb(path = None, **kwargs):
     path = path or os.getcwd()
@@ -60,16 +61,16 @@ def deb(path = None, **kwargs):
     control_path = os.path.join(debian_path, "control")
     if not os.path.exists(debian_path): os.makedirs(debian_path)
 
-    name = kwargs.get("name") or atm.conf("name", "default")
-    version = kwargs.get("version") or atm.conf("version", "0.0.0")
-    section = kwargs.get("section") or atm.conf("section", "devel")
-    priority = kwargs.get("priority") or atm.conf("priority", "optional")
-    arch = kwargs.get("arch") or atm.conf("arch", "all")
-    depends = kwargs.get("depends") or atm.conf("depends", "")
-    size = kwargs.get("size") or atm.conf("size", "0")
-    author = kwargs.get("author") or atm.conf("author", "default")
-    description = kwargs.get("description") or atm.conf("description", "")
-    contents = atm.DEB_CONTROL % (
+    name = kwargs.get("name") or base.conf("name", "default")
+    version = kwargs.get("version") or base.conf("version", "0.0.0")
+    section = kwargs.get("section") or base.conf("section", "devel")
+    priority = kwargs.get("priority") or base.conf("priority", "optional")
+    arch = kwargs.get("arch") or base.conf("arch", "all")
+    depends = kwargs.get("depends") or base.conf("depends", "")
+    size = kwargs.get("size") or base.conf("size", "0")
+    author = kwargs.get("author") or base.conf("author", "default")
+    description = kwargs.get("description") or base.conf("description", "")
+    contents = static.DEB_CONTROL % (
         name,
         version,
         section,
@@ -93,8 +94,8 @@ def deb(path = None, **kwargs):
     if not result == 0: raise RuntimeError("Debian file package operation failed")
 
 def capsule(path, data_path, name = None, description = None):
-    name = name or atm.conf("name_cap", "default")
-    description = description or atm.conf("description", "default")
+    name = name or base.conf("name_cap", "default")
+    description = description or base.conf("description", "default")
 
     result = subprocess.call([
         "capsule",
