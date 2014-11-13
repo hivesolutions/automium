@@ -50,7 +50,7 @@ from .base import build, cleanup, parse_args, load, create_paths, move, copy, re
     conf, conf_s, path, assert_c
 from .build import autogen, configure, make, msbuild, pysdist, ensure_dev
 from .environ import environ_s, environ
-from .exceptions import *
+from .exceptions import AutomiumException
 from .hash import Hash, hash_d
 from .load import download
 from .pack import compress, deb, capsule, colony, zip, tar

@@ -36,3 +36,11 @@ __copyright__ = "Copyright (c) 2008-2014 Hive Solutions Lda."
 
 __license__ = "Apache License, Version 2.0"
 """ The license for the module """
+
+class AutomiumException(Exception):
+    """
+    The top level exception to be used when creating
+    specialized exceptions within the automium context.
+    """
+
+    pass
