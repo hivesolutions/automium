@@ -40,7 +40,7 @@ __license__ = "Apache License, Version 2.0"
 import os
 import subprocess
 
-from atm import base
+from . import base
 
 def git(url = None, path = None, clean = False):
     # retrieves the various default values from the

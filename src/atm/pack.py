@@ -42,8 +42,8 @@ import zipfile
 import tarfile
 import subprocess
 
-from atm import base
-from atm import static
+from . import base
+from . import static
 
 def compress(folder, target = None):
     zip(folder + ".zip", (folder,))

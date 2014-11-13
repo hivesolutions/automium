@@ -42,8 +42,8 @@ import subprocess
 
 import copy as _copy
 
-from atm import base
-from atm import _environ
+from . import base
+from . import _environ
 
 DEV_HOME = "\\dev"
 """ The default directory to the development directory
