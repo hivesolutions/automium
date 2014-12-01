@@ -62,7 +62,7 @@ TIMESTAMP_PRECISION = 100.0
 """ The precision to be used for the timestamp integer
 identifier calculation (more precision less collisions) """
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 """ The current version value for the automium executable """
 
 RELEASE = "130"
@@ -493,7 +493,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     # the version string with its value, then removes the file
     if os.path.exists(tmp_path + "/verify/VERSION"):
         version_file = open(tmp_path + "/verify/VERSION")
-        try: version =  version_file.read().strip()
+        try: version = version_file.read().strip()
         finally: version_file.close()
         os.remove(tmp_path + "/verify/VERSION")
     # otherwise must set the version string with the default (unset)
@@ -505,7 +505,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
     # the log string with its value, then removes the file
     if os.path.exists(tmp_path + "/verify/LOG"):
         log_file = open(tmp_path + "/verify/LOG")
-        try: log =  log_file.read().strip()
+        try: log = log_file.read().strip()
         finally: log_file.close()
         os.remove(tmp_path + "/verify/LOG")
     # otherwise must set the log string with the default (unset)
