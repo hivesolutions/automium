@@ -38,6 +38,7 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import os
+import legacy
 import hashlib
 
 BUFFER_SIZE = 4096
@@ -88,12 +89,13 @@ class Hash:
             # the current digest and name values
             method = getattr(self, "_" + type + "_format")
             format = method(digest, name)
+            format = legacy.bytes(format)
 
             # opens the hash file for write purposes and then writes
             # the resulting format string into it closing the file
             # afterwards (to avoid memory leaks)
             file = open(self.file_path + "." + type, "wb")
-            try: file.write(format + "\n")
+            try: file.write(format + b"\n")
             finally: file.close()
 
     def formats(self):
@@ -222,7 +224,8 @@ def hash_d(path = None, types = ("md5", "sha256")):
         formats = hashes.formats()
         for type, format in formats.items():
             file = files[type]
-            file.write(format + "\n")
+            format = legacy.bytes(format)
+            file.write(format + b"\n")
 
     # iterates over all the resume files to close them in order
     # to avoid any memory leak
