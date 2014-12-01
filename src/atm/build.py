@@ -90,7 +90,7 @@ def configure(path = None, args = (), includes = (), libraries = (), cflags = No
         # formating element is present in the provided string in
         # such case the string is considered as belonging to a
         # template (formatting may be used)
-        is_t = lambda(x): "%s" in x
+        is_t = lambda x: "%s" in x
 
         # retrieves the base value for the cross compilation
         # name useful for the build value of the configure
