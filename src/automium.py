@@ -590,9 +590,11 @@ def run(path, configuration, options = {}, current = None, file_c = None):
         "args" : args_s,
         "result" : return_value == 0
     }
+    description_s = json.dumps(description)
+    description_s = description_s.encode("utf-8")
     description_path = os.path.join(build_path, "description.json")
     description_file = open(description_path, "wb")
-    try: json.dump(description, description_file)
+    try: description_file.write(description_s)
     finally: description_file.close()
 
     # prints the command line information and returns the control
