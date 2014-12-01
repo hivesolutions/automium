@@ -90,7 +90,7 @@ def build(config_path, arch = None, cross = None):
     # configuration definition map
     file = open(config_path, "rb")
     try: _config = json.load(file)
-    except: file.close()
+    finally: file.close()
 
     # creates the various configuration variables
     # from the provided configuration map , defaulting
