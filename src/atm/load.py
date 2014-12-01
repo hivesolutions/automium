@@ -38,21 +38,20 @@ __license__ = "Apache License, Version 2.0"
 """ The license for the module """
 
 import os
-import urllib2
-import urlparse
+import legacy
 
 DEFAULT_NAME = "download"
 """ The default name to be used for the file in case
 no name is possible to be extracted from the url """
 
 def download(url, file_path = None):
-    url_p = urlparse.urlparse(url)
+    url_p = legacy.urlparse(url)
     path = url_p.path
 
     file_path = file_path or os.path.basename(path)
     file_path = file_path or DEFAULT_NAME
 
-    response = urllib2.urlopen(url)
+    response = legacy.urlopen(url)
     contents = response.read()
 
     file = open(file_path, "wb")
