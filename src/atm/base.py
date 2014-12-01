@@ -89,8 +89,13 @@ def build(config_path, arch = None, cross = None):
     # reads the complete set of contents creating the
     # configuration definition map
     file = open(config_path, "rb")
-    try: _config = json.load(file)
+    try: data = file.read()
     finally: file.close()
+
+    # decodes the provided data with the proper encoding
+    # and then retrieves the proper ata structure from json
+    data = data.decode("utf-8")
+    _config = json.loads(data)
 
     # creates the various configuration variables
     # from the provided configuration map , defaulting
