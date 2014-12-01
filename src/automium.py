@@ -759,11 +759,11 @@ def main():
     # open the configuration file and loads the contents
     # from it assuming it's a json based file
     file = open(file_path, "rb")
-    try: contents = file.read(file)
+    try: contents = file.read()
     finally: file.close()
 
     # decodes the proper contents using the default encoding
-    # ands then reads them as proper json sturctured values
+    # ands then reads them as proper json structured values
     contents = contents.decode("utf-8")
     configuration = json.loads(contents)
 
