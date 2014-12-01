@@ -43,7 +43,7 @@ import subprocess
 import copy as _copy
 
 from . import base
-from . import _environ
+from . import environ
 
 DEV_HOME = "\\dev"
 """ The default directory to the development directory
@@ -168,10 +168,10 @@ def pysdist(setup = "setup.py", process = False):
     if not result == 0: raise RuntimeError("Python sdist build failed")
 
 def ensure_dev(includes = (), libraries = ()):
-    dev_home = _environ.environ("DEV_HOME", DEV_HOME)
-    _environ.environ_s("INCLUDE", dev_home + "\\include")
-    _environ.environ_s("LIB", dev_home + "\\lib")
-    _environ.environ_s("PATH", dev_home + "\\bin")
-    _environ.environ_s("PATH", dev_home + "\\util")
-    for include in includes: _environ.environ_s("INCLUDE", include)
-    for library in libraries: _environ.environ_s("LIB", library)
+    dev_home = environ.environ("DEV_HOME", DEV_HOME)
+    environ.environ_s("INCLUDE", dev_home + "\\include")
+    environ.environ_s("LIB", dev_home + "\\lib")
+    environ.environ_s("PATH", dev_home + "\\bin")
+    environ.environ_s("PATH", dev_home + "\\util")
+    for include in includes: environ.environ_s("INCLUDE", include)
+    for library in libraries: environ.environ_s("LIB", library)
