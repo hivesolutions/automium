@@ -52,7 +52,7 @@ RESUME_FILES = {
 """ The map associating the hash type with the name
 of the resume file to be used """
 
-class Hash:
+class Hash(object):
     """
     Class that handles the hashing abstraction for
     a series of hashes and a given file.
