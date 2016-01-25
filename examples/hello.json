@@ -1,8 +1,8 @@
 {
-    "name" : "Hello Program",
-    "description" : "Description of the hello program",
-    "files" : {
-        "win32" : "build.bat"
+    "name": "Hello Program",
+    "description": "Description of the hello program",
+    "files": {
+        "win32": "build.bat"
     },
-    "recursion" : [0, 0, 1, 0, 0]
+    "recursion": [0, 0, 1, 0, 0]
 }
