@@ -1,5 +1,5 @@
 *.pyc
 
-/build
 /dist
+/build
 /src/automium.egg-info
