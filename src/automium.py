@@ -797,3 +797,5 @@ def main_s():
 if __name__ == "__main__":
     try: DEBUG and not main() or main_s()
     finally: cleanup()
+else:
+    __path__ = []
