@@ -144,11 +144,11 @@ def hash_d(path = None, types = ("md5", "sha256")):
     In case no path is provided the current working directory
     is used instead.
 
-    @type path: String
-    @param path: The path to the directory for which the
+    :type path: String
+    :param path: The path to the directory for which the
     hash values will be computed.
-    @type types: Tuple
-    @param types: The various types of hash digests to be
+    :type types: Tuple
+    :param types: The various types of hash digests to be
     generated for the various files in the directory.
     """
 
