@@ -128,7 +128,7 @@ def colony(descriptor = "plugin.json"):
 def zip(name, names = None):
     path = os.getcwd()
     names = names or os.listdir(path)
-    _zip = zipfile.ZipFile(file = name, mode = "w")
+    _zip = zipfile.ZipFile(file = name, mode = "w", allowZip64 = True)
     try:
         for _name in names:
             is_dir = os.path.isdir(_name)

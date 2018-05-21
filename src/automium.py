@@ -680,7 +680,7 @@ def create(path, configuration, file_c):
     # iterates over all the names of files and adds them into
     # the pack file, one file step is "used" to add the meta
     # build file to the root of the file
-    zip = zipfile.ZipFile(name_pack, "w")
+    zip = zipfile.ZipFile(name_pack, mode = "w", allowZip64 = True)
     try:
         for name in names:
             name_f = os.path.join(path, name)
