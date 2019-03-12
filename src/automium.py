@@ -792,7 +792,7 @@ def main():
 
 def main_s():
     try: main()
-    except: pass
+    except Exception: pass
 
 if __name__ == "__main__":
     try: DEBUG and not main() or main_s()

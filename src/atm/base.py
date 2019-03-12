@@ -271,7 +271,7 @@ def _arch_default():
         output, _error = process.communicate()
         result = process.returncode
         contents = result == 0 and output or ""
-    except: contents = ""
+    except Exception: contents = ""
     finally: buffer.close()
 
     # strips the contents information to avoid any additional
