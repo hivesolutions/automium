@@ -42,7 +42,7 @@ import legacy
 
 DEFAULT_NAME = "download"
 """ The default name to be used for the file in case
-no name is possible to be extracted from the url """
+no name is possible to be extracted from the URL """
 
 def download(url, file_path = None):
     url_p = legacy.urlparse(url)
