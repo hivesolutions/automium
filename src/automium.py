@@ -576,7 +576,7 @@ def run(path, configuration, options = {}, current = None, file_c = None):
 
     # creates the map that describes the current build
     # to be used to output this information into a descriptive
-    # json file that may be interpreted by third parties
+    # JSON file that may be interpreted by third parties
     description = {
         "id" : build_id,
         "system" : os_name,
@@ -759,13 +759,13 @@ def main():
         raise RuntimeError("Missing build file '%s'" % file_path)
 
     # open the configuration file and loads the contents
-    # from it assuming it's a json based file
+    # from it assuming it's a JSON based file
     file = open(file_path, "rb")
     try: contents = file.read()
     finally: file.close()
 
     # decodes the proper contents using the default encoding
-    # ands then reads them as proper json structured values
+    # ands then reads them as proper JSON structured values
     contents = contents.decode("utf-8")
     configuration = json.loads(contents)
 
